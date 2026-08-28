@@ -5,7 +5,7 @@
 - Base: completed M02 checkpoint `749ec043c5c5e36c71a845fd65b36b39c498420f`
 - Host: Windows 11 x64
 - Production/native shell startup executed: no
-- Status: review candidate; human snapshot approval required before M03 acceptance or M04
+- Status: complete; human snapshot review approved
 
 ## Implemented contract
 
@@ -41,30 +41,30 @@
 
 ## Automated verification ledger
 
-| Gate                               | Result  | Evidence                                                                                                                                                                                                                                                   |
-| ---------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run test:unit`                | PASS    | 8 tests cover deterministic plans/fixtures, replay, browser-only source policy, explicit snapshot policy, 29 Agent baseline pairs, 22 Omarchy palettes, and shell evidence.                                                                                |
-| `npm run type-check`               | PASS    | TypeScript and Svelte report 0 errors and 0 warnings; generated core types pass Deno check.                                                                                                                                                                |
-| `npm run studio:build`             | PASS    | Vite production build completes without Cargo or Tauri.                                                                                                                                                                                                    |
-| `npm run studio:test:interactions` | PASS    | 19 suites cover dormant/invoked behavior, local hotkey, all six surface mappings, keyboard focus/trap/restoration, active monitor, completion collapse, light/dark/contrast/reduced motion, shell regressions, and every contextual surface at 200% scale. |
-| Explicit snapshot generation       | PASS    | 29 Agent PNG plus 29 Agent ARIA candidates and the preserved shell baselines were generated only through the dedicated update recipe.                                                                                                                      |
-| `npm run studio:test`              | PASS    | 8 unit tests and 90 compare-only Playwright tests pass against the candidate bytes.                                                                                                                                                                        |
-| In-app browser inspection          | PASS    | Dormant, invoked Capsule, Approval Sheet, Stage, Sidecar, light, dark, and high-contrast states were inspected directly; the live console contains 0 warnings or errors.                                                                                   |
-| Source and diff policy             | PASS    | `git diff --check` is clean; shared UI/Studio source policy rejects native bridge entry points; the M03 shortcut is page scoped.                                                                                                                           |
-| Human review                       | PENDING | The user must approve the final idle, invoked Capsule, Approval Sheet, Stage, Toast, Sidecar, light, dark, high-contrast, and reduced-motion candidates before M03 is accepted.                                                                            |
+| Gate                               | Result | Evidence                                                                                                                                                                                                                                                   |
+| ---------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run test:unit`                | PASS   | 8 tests cover deterministic plans/fixtures, replay, browser-only source policy, explicit snapshot policy, 29 Agent baseline pairs, 22 Omarchy palettes, and shell evidence.                                                                                |
+| `npm run type-check`               | PASS   | TypeScript and Svelte report 0 errors and 0 warnings; generated core types pass Deno check.                                                                                                                                                                |
+| `npm run studio:build`             | PASS   | Vite production build completes without Cargo or Tauri.                                                                                                                                                                                                    |
+| `npm run studio:test:interactions` | PASS   | 19 suites cover dormant/invoked behavior, local hotkey, all six surface mappings, keyboard focus/trap/restoration, active monitor, completion collapse, light/dark/contrast/reduced motion, shell regressions, and every contextual surface at 200% scale. |
+| Explicit snapshot generation       | PASS   | 29 Agent PNG plus 29 Agent ARIA candidates and the preserved shell baselines were generated only through the dedicated update recipe.                                                                                                                      |
+| `npm run studio:test`              | PASS   | 8 unit tests and 90 compare-only Playwright tests pass against the candidate bytes.                                                                                                                                                                        |
+| In-app browser inspection          | PASS   | Dormant, invoked Capsule, Approval Sheet, Stage, Sidecar, light, dark, and high-contrast states were inspected directly; the live console contains 0 warnings or errors.                                                                                   |
+| Source and diff policy             | PASS   | `git diff --check` is clean; shared UI/Studio source policy rejects native bridge entry points; the M03 shortcut is page scoped.                                                                                                                           |
+| Human review                       | PASS   | The user approved the final M03 browser candidate on 2026-08-28 after the top-bar invocation and premium surface revision.                                                                                                                                 |
 
 ## Acceptance audit
 
-| M03 criterion                                                 | Status           | Verification                                                                                                                                                                                           |
-| ------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| All surfaces meet visual, keyboard, scaling, and motion tests | PASS (automated) | Visual/ARIA baselines plus 19 interaction suites cover all six kinds, keyboard-only invocation/focus restoration, 200% bounds, and opacity-only reduced motion. Human visual approval remains pending. |
-| Default resting state is only the small Orb                   | PASS             | Idle mounts no Agent overlay; the small Orb is integrated into the active monitor's top bar.                                                                                                           |
-| No dashboard/sidebar is introduced                            | PASS             | Typed mapping permits only the six sanctioned kinds; source and browser checks find no dashboard, permanent sidebar, or reasoning surface.                                                             |
-| UI collapses cleanly after completion                         | PASS             | Dismissing completion removes the overlay and restores the dormant top-bar Orb; interaction coverage verifies the state transition.                                                                    |
+| M03 criterion                                                 | Status | Verification                                                                                                                                                                                     |
+| ------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| All surfaces meet visual, keyboard, scaling, and motion tests | PASS   | Visual/ARIA baselines plus 19 interaction suites cover all six kinds, keyboard-only invocation/focus restoration, 200% bounds, and opacity-only reduced motion; the user approved the candidate. |
+| Default resting state is only the small Orb                   | PASS   | Idle mounts no Agent overlay; the small Orb is integrated into the active monitor's top bar.                                                                                                     |
+| No dashboard/sidebar is introduced                            | PASS   | Typed mapping permits only the six sanctioned kinds; source and browser checks find no dashboard, permanent sidebar, or reasoning surface.                                                       |
+| UI collapses cleanly after completion                         | PASS   | Dismissing completion removes the overlay and restores the dormant top-bar Orb; interaction coverage verifies the state transition.                                                              |
 
-## Required human gate
+## Human review outcome
 
-Open `http://127.0.0.1:4173/` with `just studio`. Review the dormant top-bar control, then click it or press
-`Ctrl+Shift+Space`. Use the Fixture selector to inspect Capsule, Approval Sheet, Result Stage, Toast, Sidecar, light,
-dark, high-contrast, and reduced-motion candidates. M03 must not be marked complete and M04 must not begin until the
-candidate set is explicitly approved.
+The user approved the final browser candidate on 2026-08-28. The approved baseline includes the dormant top-bar Agent
+control, click and page-scoped hotkey invocation, contextual Capsule, Approval Sheet, Result Stage, Toast, and Sidecar,
+plus light, dark, high-contrast, and reduced-motion states. All M03 acceptance criteria are satisfied, authorizing the
+serial transition to M04.

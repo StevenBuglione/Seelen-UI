@@ -39,7 +39,8 @@ M03 adds the versioned Agent OS token contract, accessibility primitives, determ
 six sanctioned surface containers to the shared package. The approved Omarchy shell remains the visual underlay. Its
 only persistent Agent affordance is a small top-bar Orb control; the contextual overlay is not mounted until explicit
 local invocation. The Studio-only `Ctrl+Shift+Space` handler is page scoped and does not register a Windows shortcut.
-All M03 work remains browser-only pending human review of the candidate visual and ARIA baselines.
+All M03 work remains browser-only. The user approved its final visual and ARIA baseline candidate on 2026-08-28,
+completing M03 and authorizing the serial transition to M04.
 
 M01 changes bootstrap selection but preserves Production as the default and does not redesign any production shell
 surface, protocol, runtime crate, Windows hook, or service behavior.
