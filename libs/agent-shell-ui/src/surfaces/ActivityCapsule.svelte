@@ -7,13 +7,18 @@
   interface Props {
     state: FixtureState;
     onCancel?: () => void;
+    onSubmit?: (text: string) => void;
   }
 
-  let { state: runtimeState, onCancel = () => {} }: Props = $props();
+  let { state: runtimeState, onCancel = () => {}, onSubmit = () => {} }: Props = $props();
   let composerText = $state("");
 
   function submitComposer(event: SubmitEvent): void {
     event.preventDefault();
+    const text = composerText.trim();
+    if (!text) return;
+    onSubmit(text);
+    composerText = "";
   }
 </script>
 
@@ -30,7 +35,7 @@
 
   {#if runtimeState.composerOpen}
     <form aria-label="Agent OS text composer" onsubmit={submitComposer}>
-      <input bind:value={composerText} aria-label="Message Agent OS" placeholder="Ask Agent OS" />
+      <input bind:value={composerText} aria-label="Message Agent OS" placeholder="Ask Agent OS" autocomplete="off" />
       <AosButton type="submit" variant="primary" label="Send message"><OmarchyIcon name="arrowRight" size={13} /></AosButton>
     </form>
   {:else}

@@ -12,6 +12,7 @@
     motion?: MotionMode;
     monitorCount?: 1 | 2;
     dpiScale?: number;
+    onUserInput?: (text: string) => void;
   }
 
   let {
@@ -20,6 +21,7 @@
     motion = "normal",
     monitorCount = 1,
     dpiScale = 1,
+    onUserInput = () => {},
   }: Props = $props();
 
   const activeMonitor = $derived(snapshot.plan.activeMonitor === "monitor:2" ? 2 : 1);
@@ -63,7 +65,7 @@
 
 {#snippet agentOverlay(monitorIndex: number)}
   {#if monitorIndex === activeMonitor - 1 && agentOpen}
-    <AgentSurfaceLayer {snapshot} {theme} {motion} {dpiScale} onClose={closeAgent} />
+    <AgentSurfaceLayer {snapshot} {theme} {motion} {dpiScale} onClose={closeAgent} {onUserInput} />
   {/if}
 {/snippet}
 

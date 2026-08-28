@@ -67,10 +67,14 @@ export function parseRuntimeTrace(text: string): TraceEnvelope[] {
     const previous = envelopes[index - 1]!;
     const current = envelopes[index]!;
     if (current.seq <= previous.seq) {
-      throw new Error("runtime trace sequence numbers must be strictly increasing");
+      throw new Error(
+        "runtime trace sequence numbers must be strictly increasing",
+      );
     }
     if (current.monotonicMs < previous.monotonicMs) {
-      throw new Error("runtime trace monotonic timestamps cannot move backwards");
+      throw new Error(
+        "runtime trace monotonic timestamps cannot move backwards",
+      );
     }
   }
   return envelopes;
@@ -93,7 +97,9 @@ export function replayRuntimeTrace(text: string): RuntimeReplayResult {
   return { frames, finalSnapshot };
 }
 
-export function validateRuntimeStateSnapshot(value: unknown): RuntimeStateSnapshot {
+export function validateRuntimeStateSnapshot(
+  value: unknown,
+): RuntimeStateSnapshot {
   const snapshot = object(value, "runtime snapshot");
   const revision = safeInteger(snapshot.revision, "runtime snapshot revision");
   const state = object(snapshot.state, "runtime state");
@@ -102,7 +108,9 @@ export function validateRuntimeStateSnapshot(value: unknown): RuntimeStateSnapsh
     throw new Error(`runtime fixture is not sanctioned: ${fixture}`);
   }
   const phase = string(state.phase, "runtime phase");
-  if (!runtimePhases.has(phase)) throw new Error(`unsupported runtime phase: ${phase}`);
+  if (!runtimePhases.has(phase)) {
+    throw new Error(`unsupported runtime phase: ${phase}`);
+  }
   const presentation = string(state.presentation, "presentation intent");
   if (!presentationIntents.has(presentation)) {
     throw new Error(`unsupported presentation intent: ${presentation}`);
@@ -110,45 +118,96 @@ export function validateRuntimeStateSnapshot(value: unknown): RuntimeStateSnapsh
   const progressBasisPoints = state.progressBasisPoints;
   if (
     progressBasisPoints !== null &&
-    (!Number.isInteger(progressBasisPoints) || Number(progressBasisPoints) < 0 || Number(progressBasisPoints) > 10_000)
+    (!Number.isInteger(progressBasisPoints) ||
+      Number(progressBasisPoints) < 0 || Number(progressBasisPoints) > 10_000)
   ) {
-    throw new Error("progressBasisPoints must be null or an integer from 0 through 10000");
+    throw new Error(
+      "progressBasisPoints must be null or an integer from 0 through 10000",
+    );
   }
   const steps = stringArray(state.steps, "runtime steps");
+  const threadId = nullableString(state.threadId, "runtime thread ID");
+  const turnId = nullableString(state.turnId, "runtime turn ID");
+  const itemId = nullableString(state.itemId, "runtime item ID");
+  const acceptsInput = optionalBoolean(
+    state.acceptsInput,
+    "acceptsInput",
+    phase === "ready" || phase === "completed" || phase === "error",
+  );
+  const canInterrupt = optionalBoolean(
+    state.canInterrupt,
+    "canInterrupt",
+    phase === "thinking" || phase === "planning" || phase === "acting" ||
+      phase === "waiting-for-approval",
+  );
+  const recoverable = optionalBoolean(
+    state.recoverable,
+    "recoverable",
+    phase !== "error",
+  );
   const surfacePlan = object(snapshot.surfacePlan, "surface plan");
-  const planRevision = safeInteger(surfacePlan.revision, "surface plan revision");
-  if (planRevision !== revision) throw new Error("surface plan revision must match the state snapshot");
+  const planRevision = safeInteger(
+    surfacePlan.revision,
+    "surface plan revision",
+  );
+  if (planRevision !== revision) {
+    throw new Error("surface plan revision must match the state snapshot");
+  }
   const activeMonitor = string(surfacePlan.activeMonitor, "active monitor");
   if (activeMonitor !== "monitor:1" && activeMonitor !== "monitor:2") {
     throw new Error("active monitor is not sanctioned");
   }
-  if (!Array.isArray(surfacePlan.surfaces) || surfacePlan.surfaces.length < 1 || surfacePlan.surfaces.length > 2) {
-    throw new Error("surface plan must contain the Orb and at most one contextual surface");
+  if (
+    !Array.isArray(surfacePlan.surfaces) || surfacePlan.surfaces.length < 1 ||
+    surfacePlan.surfaces.length > 2
+  ) {
+    throw new Error(
+      "surface plan must contain the Orb and at most one contextual surface",
+    );
   }
   const surfaces = surfacePlan.surfaces.map((entry, index) => {
     const surface = object(entry, `surface ${index + 1}`);
     const kind = string(surface.kind, `surface ${index + 1} kind`);
-    if (!surfaceKinds.has(kind as SurfaceKind)) throw new Error(`unsupported surface kind: ${kind}`);
+    if (!surfaceKinds.has(kind as SurfaceKind)) {
+      throw new Error(`unsupported surface kind: ${kind}`);
+    }
     return {
       id: string(surface.id, `surface ${index + 1} id`),
       kind: kind as SurfaceKind,
       purpose: string(surface.purpose, `surface ${index + 1} purpose`),
       modal: boolean(surface.modal, `surface ${index + 1} modal`),
-      dismissible: boolean(surface.dismissible, `surface ${index + 1} dismissible`),
+      dismissible: boolean(
+        surface.dismissible,
+        `surface ${index + 1} dismissible`,
+      ),
     };
   });
-  if (surfaces[0]?.kind !== "orb") throw new Error("surface plan must begin with the persistent Orb");
+  if (surfaces[0]?.kind !== "orb") {
+    throw new Error("surface plan must begin with the persistent Orb");
+  }
 
   const compatibility = validateCompatibility(snapshot.compatibility);
+  const pendingApproval = snapshot.pendingApproval === undefined || snapshot.pendingApproval === null
+    ? null
+    : validateApproval(snapshot.pendingApproval);
+  if ((phase === "waiting-for-approval") !== (pendingApproval !== null)) {
+    throw new Error(
+      "waiting-for-approval state must have exactly one pending approval",
+    );
+  }
   if (compatibility.status === "incompatible") {
     if (
       fixture !== "error-fatal" ||
       phase !== "error" ||
       presentation !== "artifact" ||
       surfaces[1]?.kind !== "stage" ||
-      !string(state.message, "runtime message").includes("Windows remains unchanged")
+      !string(state.message, "runtime message").includes(
+        "Windows remains unchanged",
+      )
     ) {
-      throw new Error("protocol incompatibility must render a fail-closed error stage");
+      throw new Error(
+        "protocol incompatibility must render a fail-closed error stage",
+      );
     }
   }
 
@@ -164,13 +223,23 @@ export function validateRuntimeStateSnapshot(value: unknown): RuntimeStateSnapsh
       composerOpen: boolean(state.composerOpen, "composerOpen"),
       progressBasisPoints: progressBasisPoints === null ? null : Number(progressBasisPoints),
       steps,
+      threadId,
+      turnId,
+      itemId,
+      acceptsInput,
+      canInterrupt,
+      recoverable,
     },
     surfacePlan: { revision: planRevision, activeMonitor, surfaces },
     compatibility,
+    pendingApproval,
   };
 }
 
-function toFixtureSnapshot(snapshot: RuntimeStateSnapshot, envelope: TraceEnvelope): FixtureSnapshot {
+function toFixtureSnapshot(
+  snapshot: RuntimeStateSnapshot,
+  envelope: TraceEnvelope,
+): FixtureSnapshot {
   return {
     state: {
       fixture: snapshot.state.fixture as FixtureSnapshot["state"]["fixture"],
@@ -182,7 +251,33 @@ function toFixtureSnapshot(snapshot: RuntimeStateSnapshot, envelope: TraceEnvelo
       composerOpen: snapshot.state.composerOpen || undefined,
       progress: snapshot.state.progressBasisPoints === null ? undefined : snapshot.state.progressBasisPoints / 10_000,
       steps: snapshot.state.steps.length > 0 ? snapshot.state.steps : undefined,
+      approval: snapshot.pendingApproval
+        ? {
+          action: snapshot.pendingApproval.action,
+          target: snapshot.pendingApproval.target,
+          data: snapshot.pendingApproval.data,
+          reason: snapshot.pendingApproval.reason,
+          risk: snapshot.pendingApproval.risk === "R3"
+            ? "high"
+            : snapshot.pendingApproval.risk === "R2"
+            ? "medium"
+            : "low",
+          allowForWorkflow: snapshot.pendingApproval.allowForWorkflow,
+        }
+        : undefined,
+      artifact: snapshot.state.phase === "completed" &&
+          snapshot.surfacePlan.surfaces.some((surface) => surface.kind === "stage")
+        ? { kind: "document", label: "Codex response" }
+        : undefined,
       completion: snapshot.state.phase === "completed" ? { undoLabel: "Show report" } : undefined,
+      runtime: {
+        threadId: snapshot.state.threadId ?? undefined,
+        turnId: snapshot.state.turnId ?? undefined,
+        itemId: snapshot.state.itemId ?? undefined,
+        acceptsInput: snapshot.state.acceptsInput,
+        canInterrupt: snapshot.state.canInterrupt,
+        recoverable: snapshot.state.recoverable,
+      },
     },
     plan: {
       revision: snapshot.surfacePlan.revision,
@@ -196,6 +291,26 @@ function toFixtureSnapshot(snapshot: RuntimeStateSnapshot, envelope: TraceEnvelo
   };
 }
 
+function validateApproval(
+  value: unknown,
+): RuntimeStateSnapshot["pendingApproval"] {
+  const approval = object(value, "pending approval");
+  const risk = string(approval.risk, "approval risk");
+  if (risk !== "R0" && risk !== "R1" && risk !== "R2" && risk !== "R3") {
+    throw new Error(`unsupported approval risk: ${risk}`);
+  }
+  return {
+    approvalId: string(approval.approvalId, "approval ID"),
+    action: string(approval.action, "approval action"),
+    target: string(approval.target, "approval target"),
+    reason: string(approval.reason, "approval reason"),
+    risk,
+    data: string(approval.data, "approval data"),
+    expiresAtMs: safeInteger(approval.expiresAtMs, "approval expiration"),
+    allowForWorkflow: boolean(approval.allowForWorkflow, "allowForWorkflow"),
+  };
+}
+
 function validateCompatibility(value: unknown): CompatibilityState {
   const compatibility = object(value, "compatibility state");
   const status = string(compatibility.status, "compatibility status");
@@ -205,7 +320,10 @@ function validateCompatibility(value: unknown): CompatibilityState {
   }
   if (status === "incompatible") {
     const code = string(compatibility.code, "compatibility code");
-    if (code !== "incompatible-major" && code !== "authentication-failed" && code !== "compatible") {
+    if (
+      code !== "incompatible-major" && code !== "authentication-failed" &&
+      code !== "compatible"
+    ) {
       throw new Error(`unsupported compatibility code: ${code}`);
     }
     return {
@@ -227,21 +345,36 @@ function parseEnvelope(line: string, lineNumber: number): TraceEnvelope {
     throw new Error(`invalid runtime trace JSON at line ${lineNumber}`);
   }
   const envelope = object(value, `runtime trace line ${lineNumber}`);
-  const source = string(envelope.source, `runtime trace source at line ${lineNumber}`);
+  const source = string(
+    envelope.source,
+    `runtime trace source at line ${lineNumber}`,
+  );
   if (!traceSources.has(source as TraceSource)) {
     throw new Error(`unsupported runtime trace source at line ${lineNumber}`);
   }
   return {
-    seq: safeInteger(envelope.seq, `runtime trace sequence at line ${lineNumber}`),
-    monotonicMs: safeInteger(envelope.monotonicMs, `runtime trace time at line ${lineNumber}`),
+    seq: safeInteger(
+      envelope.seq,
+      `runtime trace sequence at line ${lineNumber}`,
+    ),
+    monotonicMs: safeInteger(
+      envelope.monotonicMs,
+      `runtime trace time at line ${lineNumber}`,
+    ),
     source: source as TraceSource,
     type: string(envelope.type, `runtime trace type at line ${lineNumber}`),
-    correlationId: string(envelope.correlationId, `runtime correlation ID at line ${lineNumber}`),
+    correlationId: string(
+      envelope.correlationId,
+      `runtime correlation ID at line ${lineNumber}`,
+    ),
     payload: object(envelope.payload, `runtime payload at line ${lineNumber}`),
   };
 }
 
-function version(value: unknown, name: string): { major: number; minor: number } {
+function version(
+  value: unknown,
+  name: string,
+): { major: number; minor: number } {
   const candidate = object(value, name);
   return {
     major: safeInteger(candidate.major, `${name} major`),
@@ -257,13 +390,28 @@ function object(value: unknown, name: string): Record<string, unknown> {
 }
 
 function string(value: unknown, name: string): string {
-  if (typeof value !== "string" || value.length === 0) throw new Error(`${name} must be a non-empty string`);
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`${name} must be a non-empty string`);
+  }
   return value;
 }
 
 function boolean(value: unknown, name: string): boolean {
   if (typeof value !== "boolean") throw new Error(`${name} must be a boolean`);
   return value;
+}
+
+function optionalBoolean(
+  value: unknown,
+  name: string,
+  fallback: boolean,
+): boolean {
+  return value === undefined ? fallback : boolean(value, name);
+}
+
+function nullableString(value: unknown, name: string): string | null {
+  if (value === undefined || value === null) return null;
+  return string(value, name);
 }
 
 function safeInteger(value: unknown, name: string): number {
@@ -281,6 +429,8 @@ function stringArray(value: unknown, name: string): string[] {
 }
 
 // Compile-time proof that the generated and shell trace envelopes retain the handoff fields.
-const _traceCompatibility: Pick<ShellTraceEnvelope, "seq" | "monotonicMs" | "source" | "type" | "correlationId"> =
-  {} as TraceEnvelope;
+const _traceCompatibility: Pick<
+  ShellTraceEnvelope,
+  "seq" | "monotonicMs" | "source" | "type" | "correlationId"
+> = {} as TraceEnvelope;
 void _traceCompatibility;

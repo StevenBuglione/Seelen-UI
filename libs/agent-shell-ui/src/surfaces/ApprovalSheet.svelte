@@ -47,7 +47,7 @@
     <AosButton variant="secondary" safeDefault onclick={onDeny}>{state.approval ? "Deny" : "Dismiss"}</AosButton>
     {#if state.approval}
       <AosButton variant="primary" onclick={onApprove}>Allow once</AosButton>
-      <AosButton variant="quiet" disabled={state.approval.risk === "high"}>Allow for workflow</AosButton>
+      <AosButton variant="quiet" disabled={state.approval.risk === "high" || state.approval.allowForWorkflow === false}>Allow for workflow</AosButton>
     {:else}
       <AosButton variant="primary" onclick={onApprove}>Continue</AosButton>
     {/if}

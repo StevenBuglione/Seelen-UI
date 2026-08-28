@@ -29,6 +29,8 @@
           <span class="image-plane one"></span><span class="image-plane two"></span><span class="image-sun"></span>
         {:else if state.artifact.kind === "mcp-app"}
           <span class="app-chrome"></span><span class="app-row"></span><span class="app-row short"></span>
+        {:else if state.artifact.kind === "document"}
+          <div class="document-copy"><span>Codex response</span><p>{state.message}</p></div>
         {:else}
           <span class="workspace-window primary"></span><span class="workspace-window secondary"></span>
         {/if}
@@ -135,6 +137,29 @@
     border: 1px solid var(--aos-keyline);
     border-radius: var(--aos-radius-2);
     background: color-mix(in srgb, var(--aos-bg-solid) 90%, var(--aos-accent));
+  }
+
+  .artifact-preview:has(.document-copy) {
+    display: grid;
+    min-height: 9em;
+    place-items: center;
+    padding: var(--aos-space-5);
+  }
+
+  .document-copy {
+    display: grid;
+    width: min(36em, 100%);
+    gap: var(--aos-space-2);
+  }
+
+  .document-copy span {
+    color: var(--aos-text-muted);
+    font-size: var(--aos-font-caption);
+  }
+
+  .document-copy p {
+    font-size: var(--aos-font-emphasis);
+    line-height: 1.55;
   }
 
   .image-plane,

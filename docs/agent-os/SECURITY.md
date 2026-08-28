@@ -55,3 +55,12 @@ passive fatal-error stage with an explicit unchanged-Windows message. A source-p
 `libs/agent-runtime-client` and rejects Tauri or named-pipe access. The actual current-user ACL, DPAPI bootstrap,
 HMAC-SHA256 handshake, bounded queue, heartbeat, and reconnect implementation live and are tested in the separate
 runtime process.
+
+M05 keeps that browser-only boundary while presenting model-backed text state. The generated mirror adds correlation
+identifiers, input/interrupt/recovery flags, and one exact approval request. The replay validator requires the
+waiting-for-approval phase, approval surface, and pending request to agree. The UI cannot invent a broader action or
+workflow approval, and the workflow button is disabled unless the runtime explicitly permits that scope.
+
+The composer submits only non-empty local text through its injected callback. Studio submissions merely advance
+committed fixtures; they do not contact Codex, open a named pipe, invoke Tauri, run commands, or mutate Windows. Account
+identity, raw diagnostics, and private reasoning are not present in the shell contract or replay artifacts.

@@ -9,7 +9,9 @@ export async function openFixture(
 ): Promise<void> {
   const theme = fixture === "high-contrast" ? "high-contrast" : fixture === "light-theme" ? "light" : "dark";
   const motion = fixture === "reduced-motion" ? "reduced" : "normal";
-  await page.goto(`/?mode=fixtures&fixture=${fixture}&theme=${theme}&motion=${motion}`);
+  await page.goto(
+    `/?mode=fixtures&fixture=${fixture}&theme=${theme}&motion=${motion}`,
+  );
   await expect(page.locator('[data-studio-ready="true"]')).toBeVisible();
   await expect(page.locator('[data-testid="preview-canvas"]')).toHaveAttribute(
     "data-fixture",
@@ -51,10 +53,20 @@ export async function openShell(
 
 export async function openRuntimeTrace(
   page: Page,
-  trace: "thinking-to-result" | "protocol-incompatible",
-  options: { invoke?: boolean } = {},
+  trace:
+    | "thinking-to-result"
+    | "protocol-incompatible"
+    | "m05-text-turn"
+    | "m05-approval"
+    | "m05-restart",
+  options: { invoke?: boolean; frame?: "first" | "final" } = {},
 ): Promise<void> {
-  await page.goto(`/?mode=fixtures&runtimeTrace=${trace}`);
+  const parameters = new URLSearchParams({
+    mode: "fixtures",
+    runtimeTrace: trace,
+  });
+  if (options.frame) parameters.set("runtimeFrame", options.frame);
+  await page.goto(`/?${parameters.toString()}`);
   await expect(page.locator('[data-studio-ready="true"]')).toBeVisible();
   await expect(page.locator('[data-testid="runtime-protocol"]'))
     .toContainText(`"replay": "${trace}"`);

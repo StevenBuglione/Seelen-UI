@@ -13,9 +13,10 @@
     motion?: MotionMode;
     dpiScale?: number;
     onClose?: () => void;
+    onUserInput?: (text: string) => void;
   }
 
-  let { snapshot, theme = "dark", motion = "normal", dpiScale = 1, onClose = () => {} }: Props = $props();
+  let { snapshot, theme = "dark", motion = "normal", dpiScale = 1, onClose = () => {}, onUserInput = () => {} }: Props = $props();
   let dismissedSurfaceIds = $state<string[]>([]);
   let renderedRevision = $state(0);
 
@@ -55,13 +56,13 @@
 
   {#if showInvocationCapsule}
     <div class="surface-placement capsule-placement">
-      <ActivityCapsule state={{ ...snapshot.state, heading: "What should we work on?", message: "Type a request. Voice stays off until you start it.", composerOpen: true }} onCancel={onClose} />
+      <ActivityCapsule state={{ ...snapshot.state, heading: "What should we work on?", message: "Type a request. Voice stays off until you start it.", composerOpen: true }} onCancel={onClose} onSubmit={onUserInput} />
     </div>
   {/if}
 
   {#each visibleSurfaces as surface (surface.id)}
     {#if surface.kind === "capsule"}
-      <div class="surface-placement capsule-placement"><ActivityCapsule state={snapshot.state} onCancel={() => dismiss(surface.id)} /></div>
+      <div class="surface-placement capsule-placement"><ActivityCapsule state={snapshot.state} onCancel={() => dismiss(surface.id)} onSubmit={onUserInput} /></div>
     {:else if surface.kind === "sheet"}
       <div class="surface-placement sheet-placement"><ApprovalSheet state={snapshot.state} onDeny={() => dismiss(surface.id)} onApprove={() => dismiss(surface.id)} /></div>
     {:else if surface.kind === "stage"}

@@ -49,6 +49,12 @@ snapshot into the existing `FixtureSnapshot` consumed by `FixturePreview` and `A
 trace ends on the real completion toast; the incompatible-major trace ends on the real sustained error stage and states
 that Windows remains unchanged. No webview opens the named pipe and no native Seelen path is added in M04.
 
+M05 advances the generated contract to protocol 1.1 and adds text-turn correlation, control state, and exact pending
+approval data. Deterministic App Server traces drive the existing top-bar Orb composer, transient capsule, approval
+sheet, and result stage. Private reasoning is absent from the shell contract and remains hidden unless a later explicit
+review surface is invoked. The browser Studio still has no native pipe or Codex connection; the live stdio client and
+thread lifecycle remain entirely in `agent-os-runtime`.
+
 M01 changes bootstrap selection but preserves Production as the default and does not redesign any production shell
 surface, protocol, runtime crate, Windows hook, or service behavior.
 
@@ -61,6 +67,7 @@ Shell Studio (Vite, browser only)
           +-- FixtureShellAdapter (M02)
           +-- design system + six presentation surfaces (M03)
           +-- generated runtime contract + validated trace replay (M04)
+          +-- Codex text/approval/restart presentation (M05)
           +-- native thin adapters (later milestone; not implemented)
 ```
 

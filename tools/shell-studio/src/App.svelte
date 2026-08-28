@@ -27,9 +27,37 @@
   import traceText from "./replay/thinking-to-result.aostrace.jsonl?raw";
   import m04RuntimeTraceText from "./replay/m04-thinking-to-result.runtime-events.jsonl?raw";
   import m04IncompatibleTraceText from "./replay/m04-protocol-incompatible.runtime-events.jsonl?raw";
+  import m05TextTurnTraceText from "./replay/m05-text-turn.runtime-events.jsonl?raw";
+  import m05ApprovalTraceText from "./replay/m05-approval.runtime-events.jsonl?raw";
+  import m05RestartTraceText from "./replay/m05-restart.runtime-events.jsonl?raw";
 
   type StudioMode = "shell" | "fixtures";
-  type RuntimeTraceName = "thinking-to-result" | "protocol-incompatible";
+  type RuntimeTraceName =
+    | "thinking-to-result"
+    | "protocol-incompatible"
+    | "m05-text-turn"
+    | "m05-approval"
+    | "m05-restart";
+
+  function isRuntimeTraceName(value: string | null): value is RuntimeTraceName {
+    return value === "thinking-to-result" || value === "protocol-incompatible" || value === "m05-text-turn" ||
+      value === "m05-approval" || value === "m05-restart";
+  }
+
+  function runtimeTraceText(name: RuntimeTraceName): string {
+    switch (name) {
+      case "thinking-to-result":
+        return m04RuntimeTraceText;
+      case "protocol-incompatible":
+        return m04IncompatibleTraceText;
+      case "m05-text-turn":
+        return m05TextTurnTraceText;
+      case "m05-approval":
+        return m05ApprovalTraceText;
+      case "m05-restart":
+        return m05RestartTraceText;
+    }
+  }
 
   const viewportPresets = {
     "1366×768": { width: 1366, height: 768 },
@@ -83,16 +111,21 @@
   const initialWorkspace: ShellWorkspaceId = requestedWorkspace >= 1 && requestedWorkspace <= 5 ? requestedWorkspace as ShellWorkspaceId : 1;
   const initialMotion: MotionMode = parameters.get("motion") === "reduced" ? "reduced" : "normal";
   const requestedRuntimeTrace = parameters.get("runtimeTrace");
-  const initialRuntimeTrace: RuntimeTraceName | null = requestedRuntimeTrace === "thinking-to-result" || requestedRuntimeTrace === "protocol-incompatible"
+  const initialRuntimeTrace: RuntimeTraceName | null = isRuntimeTraceName(requestedRuntimeTrace)
     ? requestedRuntimeTrace
     : null;
   const initialRuntimeReplay = initialRuntimeTrace
-    ? replayRuntimeTrace(initialRuntimeTrace === "thinking-to-result" ? m04RuntimeTraceText : m04IncompatibleTraceText)
+    ? replayRuntimeTrace(runtimeTraceText(initialRuntimeTrace))
     : null;
+  const showInitialRuntimeFinal = parameters.get("runtimeFrame") === "final" || initialRuntimeTrace !== "m05-text-turn";
+  const initialRuntimeFrameIndex = initialRuntimeReplay
+    ? showInitialRuntimeFinal ? initialRuntimeReplay.frames.length - 1 : 0
+    : 0;
+  const initialRuntimeSnapshot = initialRuntimeReplay?.frames[initialRuntimeFrameIndex]?.snapshot;
 
   const adapter = new FixtureShellAdapter(initialFixture);
   let mode = $state<StudioMode>(initialMode);
-  let fixture = $state<FixtureName>(initialRuntimeReplay?.finalSnapshot.state.fixture ?? initialFixture);
+  let fixture = $state<FixtureName>(initialRuntimeSnapshot?.state.fixture ?? initialFixture);
   let theme = $state<StudioTheme>(
     initialFixture === "high-contrast"
       ? "high-contrast"
@@ -108,8 +141,10 @@
   let viewport = $state<ViewportName>("1366×768");
   let dpi = $state<DpiName>("100%");
   let monitorCount = $state<1 | 2>(1);
-  let snapshot = $state(initialRuntimeReplay?.finalSnapshot ?? adapter.snapshot());
+  let snapshot = $state(initialRuntimeSnapshot ?? adapter.snapshot());
   let runtimeTrace = $state<RuntimeTraceName | null>(initialRuntimeTrace);
+  let runtimeReplay = $state(initialRuntimeReplay);
+  let runtimeFrameIndex = $state(initialRuntimeFrameIndex);
   let replayStatus = $state(initialRuntimeReplay
     ? `Replayed ${initialRuntimeReplay.frames.length} typed runtime snapshots`
     : "Trace ready");
@@ -132,6 +167,7 @@
     if (next === "reduced-motion") motion = "reduced";
     snapshot = adapter.loadFixture(next);
     runtimeTrace = null;
+    runtimeReplay = null;
   }
 
   function chooseShellTheme(event: Event): void {
@@ -143,6 +179,7 @@
     snapshot = adapter.inject({ kind });
     fixture = snapshot.state.fixture;
     runtimeTrace = null;
+    runtimeReplay = null;
   }
 
   function chooseMonitorCount(event: Event): void {
@@ -163,14 +200,33 @@
     fixture = snapshot.state.fixture;
     replayStatus = `Replayed ${envelopes.length} events through sequence ${envelopes.at(-1)?.seq ?? 0}`;
     runtimeTrace = null;
+    runtimeReplay = null;
   }
 
-  function replayM04Trace(name: RuntimeTraceName): void {
-    const replay = replayRuntimeTrace(name === "thinking-to-result" ? m04RuntimeTraceText : m04IncompatibleTraceText);
-    snapshot = replay.finalSnapshot;
+  function replayTypedTrace(name: RuntimeTraceName): void {
+    const replay = replayRuntimeTrace(runtimeTraceText(name));
+    runtimeFrameIndex = name === "m05-text-turn" ? 0 : replay.frames.length - 1;
+    snapshot = replay.frames[runtimeFrameIndex]?.snapshot ?? replay.finalSnapshot;
     fixture = snapshot.state.fixture;
     runtimeTrace = name;
+    runtimeReplay = replay;
     replayStatus = `Replayed ${replay.frames.length} typed runtime snapshots through sequence ${replay.frames.at(-1)?.envelope.seq ?? 0}`;
+  }
+
+  function submitRuntimeText(_text: string): void {
+    if (runtimeTrace !== "m05-text-turn" || !runtimeReplay) return;
+    runtimeFrameIndex = Math.min(1, runtimeReplay.frames.length - 1);
+    snapshot = runtimeReplay.frames[runtimeFrameIndex]?.snapshot ?? runtimeReplay.finalSnapshot;
+    fixture = snapshot.state.fixture;
+    replayStatus = `Submitted text to deterministic M05 frame ${runtimeFrameIndex + 1} of ${runtimeReplay.frames.length}`;
+  }
+
+  function advanceRuntimeFrame(): void {
+    if (!runtimeReplay || runtimeFrameIndex >= runtimeReplay.frames.length - 1) return;
+    runtimeFrameIndex += 1;
+    snapshot = runtimeReplay.frames[runtimeFrameIndex]?.snapshot ?? runtimeReplay.finalSnapshot;
+    fixture = snapshot.state.fixture;
+    replayStatus = `Advanced to deterministic runtime frame ${runtimeFrameIndex + 1} of ${runtimeReplay.frames.length}`;
   }
 </script>
 
@@ -222,13 +278,13 @@
           <label>Active monitor<select aria-label="Active monitor" value={snapshot.plan.activeMonitor} onchange={chooseActiveMonitor} disabled={monitorCount === 1}><option value="monitor:1">monitor 1</option><option value="monitor:2">monitor 2</option></select></label>
         </section>
         <section aria-labelledby="injection-controls"><h2 id="injection-controls">Inject event</h2><div class="button-grid">{#each injections as injection}<button type="button" onclick={() => inject(injection.kind)}>{injection.label}</button>{/each}</div></section>
-        <section aria-labelledby="replay-controls"><h2 id="replay-controls">Trace replay</h2><p>{replayStatus}</p><button type="button" onclick={() => replayM04Trace("thinking-to-result")}>Replay M04 runtime trace</button><button type="button" onclick={() => replayM04Trace("protocol-incompatible")}>Show incompatible protocol</button><button type="button" onclick={replayTrace}>Replay thinking-to-result.aostrace</button></section>
+        <section aria-labelledby="replay-controls"><h2 id="replay-controls">Trace replay</h2><p>{replayStatus}</p><button type="button" onclick={() => replayTypedTrace("m05-text-turn")}>Start M05 text turn</button><button type="button" onclick={advanceRuntimeFrame} disabled={!runtimeReplay || runtimeFrameIndex >= runtimeReplay.frames.length - 1}>Advance M05 runtime event</button><button type="button" onclick={() => replayTypedTrace("m05-approval")}>Show M05 Codex approval</button><button type="button" onclick={() => replayTypedTrace("m05-restart")}>Replay M05 restart</button><button type="button" onclick={() => replayTypedTrace("thinking-to-result")}>Replay M04 runtime trace</button><button type="button" onclick={() => replayTypedTrace("protocol-incompatible")}>Show incompatible protocol</button><button type="button" onclick={replayTrace}>Replay thinking-to-result.aostrace</button></section>
       {/if}
     </aside>
 
     <section class="workbench" aria-labelledby="preview-heading">
       <header class="workbench-heading">
-        <div><p>{mode === "shell" ? "Approved shell baseline" : runtimeTrace ? `M04 typed runtime replay · ${runtimeTrace}` : `M03 surface fixture ${fixtureNames.indexOf(fixture) + 1} of ${fixtureNames.length}`}</p><h2 id="preview-heading">{mode === "shell" ? `${currentShellTheme.label} · ${shellPanel === "none" ? "Desktop" : shellPanels.find((entry) => entry.value === shellPanel)?.label}` : snapshot.state.heading}</h2></div>
+        <div><p>{mode === "shell" ? "Approved shell baseline" : runtimeTrace ? `${runtimeTrace.startsWith("m05-") ? "M05" : "M04"} typed runtime replay · ${runtimeTrace}` : `M03 surface fixture ${fixtureNames.indexOf(fixture) + 1} of ${fixtureNames.length}`}</p><h2 id="preview-heading">{mode === "shell" ? `${currentShellTheme.label} · ${shellPanel === "none" ? "Desktop" : shellPanels.find((entry) => entry.value === shellPanel)?.label}` : snapshot.state.heading}</h2></div>
         <dl><div><dt>Viewport</dt><dd>{viewport}</dd></div><div><dt>DPI</dt><dd>{dpi}</dd></div><div><dt>Mode</dt><dd>{mode}</dd></div>{#if mode === "fixtures"}<div><dt>Clock</dt><dd data-testid="clock-value">{snapshot.clockMs}</dd></div>{/if}</dl>
       </header>
 
@@ -236,7 +292,7 @@
         {#if mode === "shell"}
           <ShellExperience themeId={shellTheme} {motion} {monitorCount} panel={shellPanel} layout={shellLayout} workspace={shellWorkspace} onPanelChange={(next) => (shellPanel = next)} onLayoutChange={(next) => (shellLayout = next)} onWorkspaceChange={(next) => (shellWorkspace = next)} />
         {:else}
-          <FixturePreview {snapshot} {theme} {motion} {monitorCount} dpiScale={dpiPresets[dpi]} />
+          <FixturePreview {snapshot} {theme} {motion} {monitorCount} dpiScale={dpiPresets[dpi]} onUserInput={submitRuntimeText} />
         {/if}
       </div>
 

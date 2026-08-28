@@ -81,6 +81,7 @@ export interface FixtureState {
     data: string;
     reason: string;
     risk: "low" | "medium" | "high";
+    allowForWorkflow?: boolean;
     denied?: boolean;
   };
   artifact?: {
@@ -95,6 +96,14 @@ export interface FixtureState {
   };
   completion?: {
     undoLabel?: string;
+  };
+  runtime?: {
+    threadId?: string;
+    turnId?: string;
+    itemId?: string;
+    acceptsInput: boolean;
+    canInterrupt: boolean;
+    recoverable: boolean;
   };
 }
 

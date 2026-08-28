@@ -65,3 +65,17 @@ production shell change.
 M04 changes only the browser Studio and generated/shared TypeScript package in the shell repository. The authenticated
 named-pipe implementation is confined to the separate runtime repository. M04 adds no production Seelen command, widget
 entrypoint, global shortcut, hook, taskbar behavior, service, AppBar, updater, installer, or autostart path.
+
+## M05
+
+| Area                          | Paths                                          | Reason                                                                                   | Production behavior changed? |
+| ----------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------- |
+| Generated protocol mirror     | `libs/agent-runtime-client/src/generated/**`   | Advance to protocol 1.1 with correlations, input controls, and exact approval state      | No                           |
+| Codex replay adapter          | `libs/agent-runtime-client/src/**`, `tests/**` | Map text stream, completion artifact, approval, and restart state into approved surfaces | No                           |
+| Browser presentation evidence | `tools/shell-studio/**`                        | Exercise Orb composer, capsule stream, approval sheet, result stage, and recovery replay | No                           |
+| Project records               | `docs/agent-os/**`, `UPSTREAM_PATCHES.md`      | Record M05 ownership, security boundary, decisions, evidence, and waived separate review | No                           |
+
+M05 changes only the browser Studio and generated/shared TypeScript package in the shell repository. The verified Codex
+child process, JSONL transport, thread registry, and restart supervisor remain in the separate runtime repository. M05
+adds no production Seelen command, widget entrypoint, global shortcut, hook, taskbar behavior, service, AppBar, updater,
+installer, autostart path, or Windows mutation.
