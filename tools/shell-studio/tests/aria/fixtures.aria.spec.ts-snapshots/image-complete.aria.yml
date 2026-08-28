@@ -1,0 +1,10 @@
+- region "Agent OS image-complete fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Image ready":
+            - text: stage
+            - paragraph: completed
+            - heading "Image ready" [level=2]
+            - paragraph: The generated image is ready to review.
+            - figure "Completed image preview"
+        - text: Fixture canvas · no native shell connection

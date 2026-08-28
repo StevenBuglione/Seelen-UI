@@ -1,0 +1,9 @@
+- region "Agent OS reduced-motion fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Reduced motion":
+            - text: capsule
+            - paragraph: Reduced motion enabled
+            - heading "Reduced motion" [level=2]
+            - paragraph: State changes use opacity only.
+        - text: Fixture canvas · no native shell connection

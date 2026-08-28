@@ -1,0 +1,9 @@
+- region "Agent OS result-summary fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Finished":
+            - text: toast
+            - paragraph: completed
+            - heading "Finished" [level=2]
+            - paragraph: Three files were reviewed; no changes were required.
+        - text: Fixture canvas · no native shell connection

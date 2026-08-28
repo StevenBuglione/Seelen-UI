@@ -1,0 +1,21 @@
+- region "Agent OS multi-agent-progress fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Coordinating work":
+            - text: stage
+            - paragraph: acting
+            - heading "Coordinating work" [level=2]
+            - paragraph: 2 of 3 work items complete
+            - text: /Progress \d+%/
+            - progressbar /Progress \d+%/
+            - list "Agent progress":
+                - listitem:
+                    - strong: Research
+                    - text: Complete
+                - listitem:
+                    - strong: Implementation
+                    - text: Complete
+                - listitem:
+                    - strong: Verification
+                    - text: Running
+        - text: Fixture canvas · no native shell connection

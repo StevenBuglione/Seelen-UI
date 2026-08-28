@@ -1,0 +1,9 @@
+- region "Agent OS text-composer-open fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "What should we work on?":
+            - text: capsule
+            - paragraph: ready
+            - heading "What should we work on?" [level=2]
+            - paragraph: Composer ready
+        - text: Fixture canvas · no native shell connection

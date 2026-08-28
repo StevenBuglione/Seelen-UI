@@ -1,0 +1,10 @@
+- region "Agent OS mcp-app-loading fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Opening tool":
+            - text: stage
+            - paragraph: acting
+            - heading "Opening tool" [level=2]
+            - paragraph: Loading the restricted app view…
+            - figure "Restricted app loading"
+        - text: Fixture canvas · no native shell connection

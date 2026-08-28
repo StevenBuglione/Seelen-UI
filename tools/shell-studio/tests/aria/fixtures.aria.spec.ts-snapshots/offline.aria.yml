@@ -1,0 +1,9 @@
+- region "Agent OS offline fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Offline":
+            - text: capsule
+            - paragraph: offline
+            - heading "Offline" [level=2]
+            - paragraph: Agent OS cannot reach the runtime.
+        - text: Fixture canvas · no native shell connection

@@ -9,16 +9,18 @@ Agent OS is governed by
 it completely before modifying Agent OS code, and execute milestones serially. The M00 baseline is pinned in
 [`UPSTREAM_BASELINE.md`](UPSTREAM_BASELINE.md).
 
-- Default UI development will be `just studio` after M02. The only authorized native loop on a developer workstation is
-  M01 Harness Mode through `npm run harness`; run `npm run harness:verify` after harness/bootstrap changes. Do not run
-  `npm run dev`, generic `tauri dev`, a compiled production-context Seelen executable, Integration Mode, or Production
-  Mode on the developer workstation.
+- Default UI development is browser-only `just studio`; `just studio-test` runs deterministic unit, interaction, visual,
+  and ARIA checks without compiling Rust. The only authorized native loop on a developer workstation is M01 Harness Mode
+  through `npm run harness`; run `npm run harness:verify` after harness/bootstrap changes. Do not run `npm run dev`,
+  generic `tauri dev`, a compiled production-context Seelen executable, Integration Mode, or Production Mode on the
+  developer workstation.
 - Never install Seelen, enable or change autostart, hide or alter the native taskbar, register global Windows hooks or
   shortcuts, register AppBars, start or alter the Seelen service, run updater/installer code, or run Agent OS
   Integration/Production Mode on the developer's daily Windows session.
 - Do not use `cargo build --release` for ordinary iteration. Use `cargo check` after Rust changes, then focused tests.
-- Every UI state requires a deterministic fixture, reviewed visual snapshot, and ARIA snapshot. Do not update snapshots
-  automatically unless the task explicitly authorizes reviewed visual changes.
+- Every UI state requires a deterministic fixture, reviewed visual snapshot, and ARIA snapshot. Only
+  `just studio-update-snapshots` may update baselines; never call it from `check`, CI, or another recipe, and do not
+  accept its output without human review.
 - Every model-facing action requires a typed schema, fake backend, risk classification, policy tests, before/after
   observation, postcondition verification, an explicit undo decision, and a replay fixture.
 - Do not bypass Agent OS policy with PowerShell, Tauri shell APIs, raw Win32 input, or unrestricted Seelen commands.

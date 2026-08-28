@@ -22,6 +22,24 @@ jobs:
       - run: npm run type-check
       - run: npm run test
 
+  shell-studio-windows:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - run: npm install
+      - name: Install pinned Chromium
+        run: npx playwright install chromium
+      - run: npm run studio:build
+      - run: npm run studio:test
+
   rust-linter:
     runs-on: windows-2025
     steps:

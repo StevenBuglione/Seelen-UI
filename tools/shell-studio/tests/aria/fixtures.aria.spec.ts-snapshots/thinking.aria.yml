@@ -1,0 +1,9 @@
+- region "Agent OS thinking fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Thinking":
+            - text: capsule
+            - paragraph: thinking
+            - heading "Thinking" [level=2]
+            - paragraph: Considering the safest next step
+        - text: Fixture canvas · no native shell connection

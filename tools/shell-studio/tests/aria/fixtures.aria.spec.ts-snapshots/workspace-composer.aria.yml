@@ -1,0 +1,10 @@
+- region "Agent OS workspace-composer fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Create a workspace":
+            - text: stage
+            - paragraph: ready
+            - heading "Create a workspace" [level=2]
+            - paragraph: Describe the files and tools this workspace needs.
+            - figure "Workspace composer fixture"
+        - text: Fixture canvas · no native shell connection

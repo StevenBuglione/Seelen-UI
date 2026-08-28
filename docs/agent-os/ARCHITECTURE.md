@@ -29,11 +29,24 @@ verifies postconditions.
 M00 records the unchanged baseline. M01 establishes runtime-mode isolation, a sealed shell-effect capability, a
 fixture-only adapter, and a separately compiled Tauri Harness overlay. Harness construction checks the compiled
 application identifier before creating a window, so passing a Harness flag to a production-context binary fails closed.
-M02 must establish Shell Studio and deterministic UI fixtures. Production shell design work cannot begin before both
-gates pass.
+M02 adds the shared Svelte package and a browser-only Shell Studio with deterministic fixture state, fake
+time/IDs/random values/latency, `.aostrace` replay, inspectable `AgentRuntimeState`/`SurfacePlan`, and Windows
+visual/ARIA comparison. Its preview renderer is deliberately a fixture surrogate; the production design system and
+native surface entrypoints remain owned by M03. M02 acceptance is not complete until a human approves its initial
+snapshot baselines.
 
 M01 changes bootstrap selection but preserves Production as the default and does not redesign any production shell
 surface, protocol, runtime crate, Windows hook, or service behavior.
+
+```text
+Shell Studio (Vite, browser only)
+          |
+          v
+@agent-os/shell-ui ports + deterministic fixtures
+          |
+          +-- FixtureShellAdapter (M02)
+          +-- native thin adapters (M03+; not yet implemented)
+```
 
 ## Repository ownership
 

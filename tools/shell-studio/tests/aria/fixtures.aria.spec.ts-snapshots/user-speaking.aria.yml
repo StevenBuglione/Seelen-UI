@@ -1,0 +1,10 @@
+- region "Agent OS user-speaking fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Listening":
+            - text: capsule
+            - paragraph: user-speaking
+            - heading "Listening" [level=2]
+            - paragraph: Voice activity detected
+            - blockquote: Arrange these windows for focused work.
+        - text: Fixture canvas · no native shell connection

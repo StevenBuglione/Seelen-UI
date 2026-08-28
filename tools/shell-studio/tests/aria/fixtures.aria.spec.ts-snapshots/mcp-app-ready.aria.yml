@@ -1,0 +1,10 @@
+- region "Agent OS mcp-app-ready fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Tool ready":
+            - text: stage
+            - paragraph: ready
+            - heading "Tool ready" [level=2]
+            - paragraph: The restricted app view is available.
+            - figure "Restricted app ready"
+        - text: Fixture canvas · no native shell connection

@@ -1,0 +1,9 @@
+- region "Agent OS reconnecting fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Reconnecting":
+            - text: capsule
+            - paragraph: reconnecting
+            - heading "Reconnecting" [level=2]
+            - paragraph: Restoring the local session…
+        - text: Fixture canvas · no native shell connection

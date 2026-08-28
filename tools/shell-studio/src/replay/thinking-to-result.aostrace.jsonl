@@ -1,0 +1,4 @@
+{"seq":1001,"monotonicMs":0,"source":"runtime","type":"agent-transcript","correlationId":"studio-replay-1","payload":{"fixture":"thinking","message":"Understanding the requested workspace."}}
+{"seq":1002,"monotonicMs":800,"source":"runtime","type":"plan","correlationId":"studio-replay-1","payload":{"fixture":"planning","message":"The deterministic plan has three steps."}}
+{"seq":1003,"monotonicMs":1600,"source":"shell","type":"command","correlationId":"studio-replay-1","payload":{"fixture":"acting-multi-step","message":"Replaying the second fixture action."}}
+{"seq":1004,"monotonicMs":2400,"source":"runtime","type":"result","correlationId":"studio-replay-1","payload":{"fixture":"result-summary","message":"Trace replay completed without native calls."}}

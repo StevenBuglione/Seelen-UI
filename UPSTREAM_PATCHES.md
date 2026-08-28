@@ -25,3 +25,15 @@ generated binding is modified by M00.
 
 M01 does not change production widget metadata, service implementation, hook implementation, taskbar implementation,
 installer, updater implementation, generated binding, or production UI design.
+
+## M02
+
+| Area                  | Paths                                                         | Reason                                                                                | Production behavior changed? |
+| --------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------- |
+| Shared fixture UI     | `libs/agent-shell-ui/**`                                      | Add typed ports, deterministic fixtures, fake inputs, replay, and preview surrogate   | No                           |
+| Browser-only Studio   | `tools/shell-studio/**`, `justfile`, `package.json`           | Add the safe HMR loop, controls, inspectors, and explicit snapshot workflow           | No                           |
+| Snapshot verification | `.github/workflows/ci.yml`, `package-lock.json`, `.gitignore` | Pin Playwright/Vite tooling and compare Windows visual/ARIA baselines without updates | No                           |
+| Project records       | `AGENTS.md`, `docs/agent-os/**`, `UPSTREAM_PATCHES.md`        | Record the M02 boundary, decision, candidate evidence, and human review gate          | No                           |
+
+M02 does not add a native widget entrypoint, Tauri command, production shell surface, runtime protocol, Windows hook,
+service behavior, updater/installer path, or Agent OS production design system.

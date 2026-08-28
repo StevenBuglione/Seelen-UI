@@ -29,3 +29,16 @@ M01 makes them structurally unreachable from Harness Mode:
 
 Integration and Production remain forbidden on the active developer session. The two Integration authorization signals
 are defense in depth; they do not make a non-disposable environment acceptable.
+
+M02 adds a separate browser-only boundary:
+
+- `just studio` resolves only to Vite and cannot compile or launch Rust/Tauri;
+- shared Agent OS components depend on the TypeScript `ShellAdapter` port, with only `FixtureShellAdapter` implemented
+  in M02;
+- a source-policy unit test rejects Tauri/native bridge entry points from the shared UI and Studio source trees;
+- fixture state, fake time, identifiers, random values, network latency, and `.aostrace` replay are deterministic;
+- Studio binds its development server to `127.0.0.1` and exposes no native command bridge;
+- CI compares committed Windows visual and ARIA baselines but has no snapshot-update command.
+
+The Studio is a preview/test process, not a trust boundary for untrusted external content. M02 adds no network client,
+file mutation port, shell command, updater, installer, or production process connection.

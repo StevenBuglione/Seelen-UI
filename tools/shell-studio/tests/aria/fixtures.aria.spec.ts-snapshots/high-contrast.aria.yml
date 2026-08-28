@@ -1,0 +1,9 @@
+- region "Agent OS high-contrast fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "High contrast":
+            - text: sheet
+            - paragraph: High contrast enabled
+            - heading "High contrast" [level=2]
+            - paragraph: Controls and status remain distinct without color alone.
+        - text: Fixture canvas · no native shell connection

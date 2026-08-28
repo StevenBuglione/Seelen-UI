@@ -1,0 +1,13 @@
+- region "Agent OS planning fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Planning":
+            - text: capsule
+            - paragraph: planning
+            - heading "Planning" [level=2]
+            - paragraph: Preparing a concise action plan
+            - list:
+                - listitem: Inspect current workspace
+                - listitem: Propose layout
+                - listitem: Wait for confirmation
+        - text: Fixture canvas · no native shell connection

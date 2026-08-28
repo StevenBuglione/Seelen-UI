@@ -1,0 +1,9 @@
+- region "Agent OS error-fatal fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Agent OS needs attention":
+            - text: stage
+            - paragraph: Fatal error
+            - heading "Agent OS needs attention" [level=2]
+            - paragraph: Diagnostics are available. Windows remains unchanged.
+        - text: Fixture canvas · no native shell connection

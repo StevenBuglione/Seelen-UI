@@ -1,0 +1,12 @@
+- region "Agent OS image-editing fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Editing image":
+            - text: stage
+            - paragraph: acting
+            - heading "Editing image" [level=2]
+            - paragraph: Applying the requested background change
+            - text: /Progress \d+%/
+            - progressbar /Progress \d+%/
+            - figure "Image edit preview"
+        - text: Fixture canvas · no native shell connection

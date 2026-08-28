@@ -1,0 +1,14 @@
+- region "Agent OS approval-denied fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Action not approved":
+            - text: toast
+            - paragraph: ready
+            - heading "Action not approved" [level=2]
+            - paragraph: No changes were made.
+            - group "Approval fixture":
+                - strong: Apply the reviewed patch
+                - text: "Risk: medium"
+                - button "Approve" [disabled]
+                - button "Deny"
+        - text: Fixture canvas · no native shell connection

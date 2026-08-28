@@ -1,0 +1,15 @@
+- region "Agent OS acting-multi-step fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Working through 3 steps":
+            - text: capsule stage
+            - paragraph: acting
+            - heading "Working through 3 steps" [level=2]
+            - paragraph: "Step 2 of 3: compare revisions"
+            - text: /Progress \d+%/
+            - progressbar /Progress \d+%/
+            - list:
+                - listitem: Read inputs
+                - listitem: Compare revisions
+                - listitem: Prepare summary
+        - text: Fixture canvas · no native shell connection

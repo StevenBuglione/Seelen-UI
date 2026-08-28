@@ -1,0 +1,11 @@
+- region "Agent OS acting-single-step fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Working":
+            - text: capsule
+            - paragraph: acting
+            - heading "Working" [level=2]
+            - paragraph: Opening the requested artifact
+            - text: /Progress \d+%/
+            - progressbar /Progress \d+%/
+        - text: Fixture canvas · no native shell connection

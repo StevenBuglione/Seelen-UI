@@ -1,0 +1,14 @@
+- region "Agent OS waiting-for-approval fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Approval required":
+            - text: sheet
+            - paragraph: waiting-for-approval
+            - heading "Approval required" [level=2]
+            - paragraph: This action changes a local file.
+            - group "Approval fixture":
+                - strong: Apply the reviewed patch
+                - text: "Risk: medium"
+                - button "Approve"
+                - button "Deny"
+        - text: Fixture canvas · no native shell connection

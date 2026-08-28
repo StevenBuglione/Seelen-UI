@@ -1,0 +1,9 @@
+- region "Agent OS interrupted fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Stopped":
+            - text: capsule
+            - paragraph: interrupted
+            - heading "Stopped" [level=2]
+            - paragraph: The current action was interrupted.
+        - text: Fixture canvas · no native shell connection

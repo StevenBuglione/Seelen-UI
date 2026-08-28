@@ -1,0 +1,9 @@
+- region "Agent OS error-recoverable fixture preview":
+    - article "Fixture monitor 1":
+        - text: Monitor 1 Active
+        - region "Couldn’t finish that step":
+            - text: sheet
+            - paragraph: Recoverable error
+            - heading "Couldn’t finish that step" [level=2]
+            - paragraph: Retry is available and no state was changed.
+        - text: Fixture canvas · no native shell connection
