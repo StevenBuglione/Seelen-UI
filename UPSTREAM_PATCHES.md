@@ -28,12 +28,14 @@ installer, updater implementation, generated binding, or production UI design.
 
 ## M02
 
-| Area                  | Paths                                                         | Reason                                                                                | Production behavior changed? |
-| --------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------- |
-| Shared fixture UI     | `libs/agent-shell-ui/**`                                      | Add typed ports, deterministic fixtures, fake inputs, replay, and preview surrogate   | No                           |
-| Browser-only Studio   | `tools/shell-studio/**`, `justfile`, `package.json`           | Add the safe HMR loop, controls, inspectors, and explicit snapshot workflow           | No                           |
-| Snapshot verification | `.github/workflows/ci.yml`, `package-lock.json`, `.gitignore` | Pin Playwright/Vite tooling and compare Windows visual/ARIA baselines without updates | No                           |
-| Project records       | `AGENTS.md`, `docs/agent-os/**`, `UPSTREAM_PATCHES.md`        | Record the M02 boundary, decision, candidate evidence, and human review gate          | No                           |
+| Area                  | Paths                                                                                                                           | Reason                                                                                | Production behavior changed? |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------- |
+| Shared fixture UI     | `libs/agent-shell-ui/**`                                                                                                        | Add typed ports, deterministic fixtures, fake inputs, replay, and preview surrogate   | No                           |
+| Browser-only Studio   | `tools/shell-studio/**`, `justfile`, `package.json`                                                                             | Add the safe HMR loop, controls, inspectors, and explicit snapshot workflow           | No                           |
+| Snapshot verification | `.github/workflows/ci.yml`, `package-lock.json`, `.gitignore`                                                                   | Pin Playwright/Vite tooling and compare Windows visual/ARIA baselines without updates | No                           |
+| Project records       | `AGENTS.md`, `docs/agent-os/**`, `UPSTREAM_PATCHES.md`                                                                          | Record the M02 boundary, decision, candidate evidence, and human review gate          | No                           |
+| Omarchy reference     | `libs/agent-shell-ui/src/themes/**`, `libs/agent-shell-ui/src/assets/**`, `docs/agent-os/upstream/**`, `THIRD_PARTY_NOTICES.md` | Pin and normalize the approved source-grounded shell experience and provenance        | No                           |
+| Shell experience lab  | `libs/agent-shell-ui/src/surfaces/ShellExperience.svelte`, `tools/shell-studio/**`                                              | Add the complete shell-first browser prototype and deterministic review states        | No                           |
 
 M02 does not add a native widget entrypoint, Tauri command, production shell surface, runtime protocol, Windows hook,
 service behavior, updater/installer path, or Agent OS production design system.

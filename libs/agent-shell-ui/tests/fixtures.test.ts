@@ -8,6 +8,7 @@ import { parseAosTrace } from "../src/replay/aostrace.ts";
 import { DeterministicSource, FakeClock } from "../src/state/determinism.ts";
 import { createFixtureScenario, fixtureCatalog } from "../src/state/fixtures.ts";
 import { fixtureNames } from "../src/state/types.ts";
+import { getOmarchyTheme, omarchyThemeIds, omarchyThemes, omarchyThemeStyle } from "../src/themes/omarchy.ts";
 
 test("every required M02 fixture has a deterministic state and surface plan", () => {
   assert.equal(fixtureCatalog.length, 26);
@@ -144,6 +145,33 @@ test("every fixture has a Windows visual baseline and an ARIA baseline", () => {
     assert.ok(
       existsSync(join(ariaDirectory, `${fixture}.aria.yml`)),
       `missing ARIA baseline for ${fixture}`,
+    );
+  }
+});
+
+test("the complete pinned Omarchy palette catalog normalizes to shell tokens", () => {
+  assert.equal(omarchyThemeIds.length, 22);
+  assert.equal(omarchyThemes.length, 22);
+  assert.deepEqual(omarchyThemes.map((theme) => theme.id), omarchyThemeIds);
+  const vantablack = getOmarchyTheme("vantablack");
+  assert.equal(vantablack.background, "#000000");
+  assert.equal(vantablack.foreground, "#ffffff");
+  assert.match(omarchyThemeStyle(vantablack), /--shell-accent:#8d8d8d/u);
+  assert.match(omarchyThemeStyle(vantablack), /--shell-background:#000000/u);
+});
+
+test("every shell reference state has explicit Windows visual and ARIA evidence", () => {
+  const panels = ["none", "launcher", "calendar", "quick-settings", "notifications", "overview"];
+  const visualDirectory = join("tools", "shell-studio", "tests", "visual", "shell.visual.spec.ts-snapshots");
+  const ariaDirectory = join("tools", "shell-studio", "tests", "aria", "shell.aria.spec.ts-snapshots");
+  for (const panel of panels) {
+    assert.ok(
+      existsSync(join(visualDirectory, `shell-vantablack-${panel}-chromium-win32.png`)),
+      `missing shell visual baseline for ${panel}`,
+    );
+    assert.ok(
+      existsSync(join(ariaDirectory, `shell-vantablack-${panel}.aria.yml`)),
+      `missing shell ARIA baseline for ${panel}`,
     );
   }
 });

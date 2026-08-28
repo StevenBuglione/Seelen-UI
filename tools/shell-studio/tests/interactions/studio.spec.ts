@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { fixtureNames } from "../../../../libs/agent-shell-ui/src/state/types.ts";
 
-import { openFixture } from "../helpers.ts";
+import { openFixture, openShell } from "../helpers.ts";
 
 test("every required base fixture renders through the shared package", async ({ page }) => {
   await openFixture(page, "idle");
@@ -71,7 +71,7 @@ test("viewport, DPI, theme, motion, monitors, and fake clock are controllable", 
 test("keyboard focus begins in scenario controls and approval actions have visible focus", async ({ page }) => {
   await openFixture(page, "waiting-for-approval");
   await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Fixture", { exact: true })).toBeFocused();
+  await expect(page.getByLabel("Preview", { exact: true })).toBeFocused();
   await page.getByRole("button", { name: "Approve", exact: true }).focus();
   await expect(page.getByRole("button", { name: "Approve", exact: true }))
     .toBeFocused();
@@ -80,4 +80,59 @@ test("keyboard focus begins in scenario controls and approval actions have visib
     exact: true,
   }).evaluate((element) => getComputedStyle(element).outlineStyle);
   expect(outlineStyle).not.toBe("none");
+});
+
+test("shell-first mode exposes the pinned Omarchy experience without an agent surface", async ({ page }) => {
+  await openShell(page);
+  const shell = page.locator('[data-testid="shell-canvas"]');
+  await expect(shell).toHaveAttribute("data-theme", "vantablack");
+  await expect(shell).toHaveAttribute("data-layout", "dwindle");
+  await expect(page.getByLabel("Desktop top bar")).toBeVisible();
+  await expect(page.getByRole("article", { name: /Terminal:/u })).toBeVisible();
+  await expect(page.locator(".status-node")).toHaveCount(0);
+  await expect(page.getByText("Studio simulation · no native shell connection")).toBeVisible();
+});
+
+test("bar controls open each contextual shell panel and Escape dismisses it", async ({ page }) => {
+  await openShell(page);
+  const cases = [
+    ["Open applications", "launcher", "Application launcher"],
+    ["Open calendar", "calendar", "Calendar and agenda"],
+    ["Open quick settings", "quick-settings", "Quick settings"],
+    ["Open notifications", "notifications", "Notifications"],
+    ["Open workspace overview", "overview", "Workspace overview"],
+  ] as const;
+
+  for (const [buttonName, panel, regionName] of cases) {
+    await page.getByRole("button", { name: buttonName, exact: true }).click();
+    await expect(page.locator('[data-testid="shell-canvas"]')).toHaveAttribute("data-panel", panel);
+    await expect(page.getByRole("region", { name: regionName, exact: true })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(page.locator('[data-testid="shell-canvas"]')).toHaveAttribute("data-panel", "none");
+  }
+});
+
+test("theme, workspace, and layout controls update the shell contract", async ({ page }) => {
+  await openShell(page);
+  const contract = page.getByRole("region", { name: "Shell contract" });
+  await contract.getByLabel("Omarchy theme").selectOption("rose-pine");
+  await contract.getByLabel("Workspace", { exact: true }).selectOption("3");
+  await contract.getByLabel("Window layout").selectOption("columns");
+  const shell = page.locator('[data-testid="shell-canvas"]');
+  await expect(shell).toHaveAttribute("data-theme", "rose-pine");
+  await expect(shell).toHaveAttribute("data-workspace", "3");
+  await expect(shell).toHaveAttribute("data-layout", "columns");
+  await expect(page.getByRole("main", { name: "Design workspace" })).toBeVisible();
+});
+
+test("launcher search and launch feedback complete the primary keyboard flow", async ({ page }) => {
+  await openShell(page, { panel: "launcher" });
+  const search = page.getByRole("textbox", { name: "Search applications" });
+  await search.fill("term");
+  await expect(page.getByRole("button", { name: /Terminal Develop/u })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Browser Create/u })).toHaveCount(0);
+  await page.getByRole("button", { name: /Terminal Develop/u }).click();
+  await expect(page.locator('[data-testid="shell-canvas"]')).toHaveAttribute("data-panel", "none");
+  await expect(page.locator('[data-testid="shell-canvas"]').getByRole("status"))
+    .toContainText("Terminal opened in Build");
 });

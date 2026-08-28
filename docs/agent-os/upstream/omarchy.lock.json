@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/basecamp/omarchy.git",
+  "defaultBranch": "quattro",
+  "revision": "83881e979b35468c3e7d60b171e319ede61a88fd",
+  "license": {
+    "spdx": "MIT",
+    "path": "LICENSE",
+    "sha256": "717ba1949502290f8e47688ae2e323acd06c8ca47aec9f7596b15f678c1af4a2"
+  },
+  "referenceFiles": [
+    {
+      "path": "config/omarchy/shell.json",
+      "sha256": "b16dc9646bf68e81643522cef504795d97cb5016d80d8b65784bde44f2c0883f"
+    },
+    {
+      "path": "manual/05-the-top-bar.md",
+      "sha256": "69456d1fbdc0f78fdaaf1197e67eb0bd0385edbe2b77136bcd181bb8954f3766"
+    },
+    {
+      "path": "manual/06-themes.md",
+      "sha256": "da8466973e6fa07dea147b939a95c78c8b0bb45842e45013cc9c528705ef8515"
+    },
+    {
+      "path": "manual/43-making-your-own-theme.md",
+      "sha256": "b3e88b46dd9665248557dbf04738ea444a3e8552a91a4b0318501001f8ec5677"
+    },
+    {
+      "path": "docs/omarchy-shell.md",
+      "sha256": "7868ad487f349d773e0ff8eb41191e0fa28669ef1d3a0349e2dbfe12e6dc0d08"
+    },
+    {
+      "path": "themes/vantablack/colors.toml",
+      "sha256": "8a9272c46b4eeeb0376026e81586d636b6ff6e4916aadf5a0aa99980567efe33"
+    }
+  ],
+  "normalizedPaletteCatalog": {
+    "themeCount": 22,
+    "orderedSourceHashSha256": "c52e5e12431ebd8bcf29aeeb766ebb99e9fe2e49d9a4acfad3d53483af7c8a22",
+    "destination": "libs/agent-shell-ui/src/themes/omarchy.ts"
+  },
+  "vendoredAssets": [
+    {
+      "source": "themes/vantablack/backgrounds/2-layers-deep.webp",
+      "destination": "libs/agent-shell-ui/src/assets/omarchy/vantablack-layers-deep.webp",
+      "sha256": "059720c4eb4967bbce84a7e8be2e86e9cd7f9c2c1ea0880c215462f7270b31cd"
+    }
+  ],
+  "executableSourcesImported": false,
+  "forbiddenRuntimeImports": [
+    "Quickshell QML",
+    "Hyprland Lua",
+    "Bash scripts",
+    "Wayland or D-Bus IPC",
+    "Omarchy services and installers"
+  ]
+}
