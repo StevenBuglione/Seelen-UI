@@ -136,3 +136,27 @@ test("launcher search and launch feedback complete the primary keyboard flow", a
   await expect(page.locator('[data-testid="shell-canvas"]').getByRole("status"))
     .toContainText("Terminal opened in Build");
 });
+
+test("top bar center readout shares the bar vertical midpoint", async ({ page }) => {
+  await openShell(page);
+
+  const bar = await page.locator(".top-bar").boundingBox();
+  const center = await page.locator(".bar-center").boundingBox();
+  const clock = await page.locator(".clock-button").boundingBox();
+  const weather = await page.locator(".weather").boundingBox();
+
+  expect(bar).not.toBeNull();
+  expect(center).not.toBeNull();
+  expect(clock).not.toBeNull();
+  expect(weather).not.toBeNull();
+
+  const barMidpoint = bar!.y + bar!.height / 2;
+  const offsets = {
+    center: center!.y + center!.height / 2 - barMidpoint,
+    clock: clock!.y + clock!.height / 2 - barMidpoint,
+    weather: weather!.y + weather!.height / 2 - barMidpoint,
+  };
+  for (const offset of Object.values(offsets)) {
+    expect(Math.abs(offset), JSON.stringify({ bar, center, clock, weather, offsets })).toBeLessThanOrEqual(0.5);
+  }
+});

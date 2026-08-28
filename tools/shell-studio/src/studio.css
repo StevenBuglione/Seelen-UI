@@ -259,7 +259,7 @@ button[aria-pressed="true"] {
   font-size: calc(1em * var(--studio-dpi));
 }
 
-.clock-button {
+.fixture-clock-button {
   margin-top: 10px;
 }
 

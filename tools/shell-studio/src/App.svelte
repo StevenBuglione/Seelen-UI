@@ -188,7 +188,7 @@
         {/if}
       </div>
 
-      {#if mode === "fixtures"}<button class="clock-button" type="button" onclick={() => (snapshot = adapter.advanceClock(1_000))}>Advance fake clock by 1 second</button>{/if}
+      {#if mode === "fixtures"}<button class="fixture-clock-button" type="button" onclick={() => (snapshot = adapter.advanceClock(1_000))}>Advance fake clock by 1 second</button>{/if}
 
       <div class="inspectors">
         {#if mode === "shell"}

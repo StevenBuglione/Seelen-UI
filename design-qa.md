@@ -13,6 +13,8 @@
   - `D:\Temp\agent-os-shell-state-contact-sheet.png`
 - Focused top-bar reference comparison after icon-alignment correction:
   - `D:\Temp\agent-os-topbar-reference-pass4.png`
+- Focused top-bar reference comparison after center-readout correction:
+  - `D:\Temp\agent-os-topbar-reference-pass5.png`
 - State: Vantablack theme, Build workspace, dwindle layout, normal motion, one monitor, desktop plus all five contextual
   panels.
 - CSS viewport: 1366 x 768 shell preset inside the 1440 x 1000 Studio test viewport.
@@ -35,11 +37,12 @@ not copied or executed.
 ## Focused-region comparison
 
 The six-state contact sheet was inspected at original resolution for the top bar, launcher, calendar, quick settings,
-notifications, and workspace overview. The focused pass-four comparison places the normalized Omarchy bar and corrected
-Studio bar in one image at 2x inspection scale. It verifies centered icon geometry, consistent panel anchoring,
-keylines, radius, blur, icon stroke, compact typography, active state, and Vantablack token use. The repository does not
-provide same-viewport screenshots of every Quickshell panel at the pinned revision, so panel QA is based on visible
-Vantablack preview language plus the pinned bar, theme, and shell contracts rather than false pixel-level claims.
+notifications, and workspace overview. The focused pass-four and pass-five comparisons place the normalized Omarchy bar
+and corrected Studio bar in one image at 2x inspection scale. They verify centered icon and center-readout geometry,
+consistent panel anchoring, keylines, radius, blur, icon stroke, compact typography, active state, and Vantablack token
+use. The repository does not provide same-viewport screenshots of every Quickshell panel at the pinned revision, so
+panel QA is based on visible Vantablack preview language plus the pinned bar, theme, and shell contracts rather than
+false pixel-level claims.
 
 ## Required fidelity surfaces
 
@@ -100,6 +103,15 @@ remains.
 - The focused reference comparison confirms that the launcher, notification, system, overview, and workspace icons are
   centered within the 20-pixel bar. The containment and focus treatment from pass three remain intact. No P0, P1, or P2
   finding remains.
+
+### Pass 5 — passed after center-readout correction
+
+- [P2] Wednesday, the time, and weather were vertically low while the other icons were already correct. A Studio-only
+  fixture control reused the shell's `.clock-button` class, leaking a 10-pixel top margin into the shared shell preview.
+  Fix: renamed the Studio control to `.fixture-clock-button` and preserved the shell's existing horizontal layout.
+- The permanent geometry check now proves that the center group, clock, and weather midpoints match the 20-pixel bar
+  midpoint within half a pixel. The focused source comparison confirms the corrected visual alignment without changing
+  the left or right icon groups. No P0, P1, or P2 finding remains.
 
 ## Follow-up polish
 
