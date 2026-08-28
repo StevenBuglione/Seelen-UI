@@ -38,10 +38,10 @@
 | `npm run type-check`               | PASS       | TypeScript and Svelte report 0 errors and 0 warnings; generated core types also pass Deno check.                                                   |
 | `npm run studio:build`             | PASS       | Vite production build completes without Cargo/Tauri.                                                                                               |
 | `npm run studio:test:interactions` | PASS       | 8 suites cover 26 fixtures plus shell panels, launcher flow, themes, workspaces, layouts, keyboard focus, and fake time.                           |
-| Explicit snapshot generation       | PASS       | 32 Windows PNG and 32 ARIA YAML candidates generated only by the dedicated update command.                                                         |
-| `npm run studio:test`              | PASS       | 8 unit tests and 72 Playwright comparisons/interactions passed after candidate generation.                                                         |
+| Explicit snapshot generation       | PASS       | 33 Windows PNG and 32 ARIA YAML candidates generated only by the dedicated update command, including a zero-diff top-bar regression baseline.      |
+| `npm run studio:test`              | PASS       | 8 unit tests and 73 Playwright comparisons/interactions passed after candidate generation.                                                         |
 | In-app browser inspection          | PASS       | Desktop, launcher, quick settings, overview, light palette, accessibility tree, and interactions inspected; browser console has 0 warnings/errors. |
-| Product Design source comparison   | PASS       | Omarchy source and browser implementation compared in one normalized image; three-pass report ends `passed` in `design-qa.md`.                     |
+| Product Design source comparison   | PASS       | Omarchy source and browser implementation compared in normalized full and focused images; four-pass report ends `passed` in `design-qa.md`.        |
 | `just` recipe dry runs             | PASS       | Studio recipes resolve only to npm/Vite/Playwright and contain no Cargo/Tauri invocation.                                                          |
 | Windows snapshot CI                | CONFIGURED | Windows 2025, Node 24, and compare-only Studio tests; hosted execution awaits a pull request.                                                      |
 
@@ -72,7 +72,8 @@ surface.
 The revised browser-only candidate was compared against Omarchy's Vantablack preview and dwindle-layout reference. The
 first comparison found a global-grid collision and excess bar/density drift; both were fixed. Human feedback then found
 that the reviewed bar was still too tall and its control treatment could cross the keyline. The third comparison
-verifies the corrected 20-pixel bar, contained 18-pixel controls, and inset focus treatment with no remaining P0, P1, or
-P2 finding. Two P3 follow-ups remain documented for future disposable-environment fidelity work.
+verifies the corrected 20-pixel bar, contained 18-pixel controls, and inset focus treatment. A fourth pass corrected
+inherited Studio minimum-height styling that displaced the bar icons and verifies their centered alignment. No P0, P1,
+or P2 finding remains. Two P3 follow-ups remain documented for future disposable-environment fidelity work.
 
-M03 must not begin until the human reviewer accepts or requests changes to the 32 visual and 32 ARIA candidates.
+M03 must not begin until the human reviewer accepts or requests changes to the 33 visual and 32 ARIA candidates.

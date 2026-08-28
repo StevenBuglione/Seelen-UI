@@ -18,3 +18,13 @@ for (const panel of states) {
       .toHaveScreenshot(`shell-vantablack-${panel}.png`);
   });
 }
+
+test("Omarchy Vantablack top bar visual @snapshot", async ({ page }) => {
+  await openShell(page);
+  await expect(page.locator(".top-bar")).toHaveScreenshot(
+    "shell-vantablack-top-bar.png",
+    {
+      maxDiffPixels: 0,
+    },
+  );
+});

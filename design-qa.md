@@ -11,6 +11,8 @@
   - `D:\Temp\agent-os-omarchy-comparison-pass3.png`
 - Focused implementation state comparison:
   - `D:\Temp\agent-os-shell-state-contact-sheet.png`
+- Focused top-bar reference comparison after icon-alignment correction:
+  - `D:\Temp\agent-os-topbar-reference-pass4.png`
 - State: Vantablack theme, Build workspace, dwindle layout, normal motion, one monitor, desktop plus all five contextual
   panels.
 - CSS viewport: 1366 x 768 shell preset inside the 1440 x 1000 Studio test viewport.
@@ -33,10 +35,11 @@ not copied or executed.
 ## Focused-region comparison
 
 The six-state contact sheet was inspected at original resolution for the top bar, launcher, calendar, quick settings,
-notifications, and workspace overview. It verifies consistent panel anchoring, keylines, radius, blur, icon stroke,
-compact typography, active state, and Vantablack token use. The repository does not provide same-viewport screenshots of
-every Quickshell panel at the pinned revision, so panel QA is based on visible Vantablack preview language plus the
-pinned bar, theme, and shell contracts rather than false pixel-level claims.
+notifications, and workspace overview. The focused pass-four comparison places the normalized Omarchy bar and corrected
+Studio bar in one image at 2x inspection scale. It verifies centered icon geometry, consistent panel anchoring,
+keylines, radius, blur, icon stroke, compact typography, active state, and Vantablack token use. The repository does not
+provide same-viewport screenshots of every Quickshell panel at the pinned revision, so panel QA is based on visible
+Vantablack preview language plus the pinned bar, theme, and shell contracts rather than false pixel-level claims.
 
 ## Required fidelity surfaces
 
@@ -88,6 +91,15 @@ remains.
 - The new side-by-side comparison confirms that the bar now matches the visual density of the pinned Omarchy preview.
   Control surfaces remain contained inside the bar with a visible accessibility focus state. No P0, P1, or P2 finding
   remains.
+
+### Pass 4 — passed after icon-alignment correction
+
+- [P2] The compacted controls inherited the Studio's global 31-pixel `min-height`, so their 18-pixel shell height did
+  not control the rendered box and icons were vertically displaced. Fix: explicitly set the top-bar controls to an
+  18-pixel minimum height and line height, and make workspace controls use grid centering.
+- The focused reference comparison confirms that the launcher, notification, system, overview, and workspace icons are
+  centered within the 20-pixel bar. The containment and focus treatment from pass three remain intact. No P0, P1, or P2
+  finding remains.
 
 ## Follow-up polish
 

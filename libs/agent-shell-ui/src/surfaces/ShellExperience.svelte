@@ -544,11 +544,15 @@
   .clock-button,
   .workspaces button {
     min-width: 19px;
+    min-height: 18px;
     height: 18px;
     border: 0;
     border-radius: 3px;
     background: transparent;
+    align-self: center;
+    box-sizing: border-box;
     cursor: pointer;
+    line-height: 1;
   }
 
   .bar-button {
@@ -567,6 +571,12 @@
   .brand-button :global(svg) {
     width: 12px;
     height: 12px;
+  }
+
+  .top-bar :global(.omarchy-icon) {
+    align-self: center;
+    justify-self: center;
+    vertical-align: middle;
   }
 
   .brand-button {
@@ -593,11 +603,13 @@
 
   .workspaces button {
     position: relative;
+    display: grid;
     width: 19px;
     padding: 0;
     color: var(--shell-dark-foreground);
     font-size: 9px;
     cursor: pointer;
+    place-items: center;
   }
 
   .workspaces button::after {
@@ -630,7 +642,7 @@
   .clock-button {
     display: flex;
     min-width: 91px;
-    align-items: baseline;
+    align-items: center;
     justify-content: center;
     gap: 4px;
     padding: 0 4px;
