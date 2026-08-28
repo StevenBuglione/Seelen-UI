@@ -9,6 +9,7 @@ use windows::Win32::{
 use windows_core::Interface;
 
 use crate::{
+    agent_os::ShellEffectCapability,
     app::get_app_handle,
     error::Result,
     get_tokio_handle,
@@ -81,7 +82,7 @@ impl ServicePipe {
 
     // the service should be running since installer will start it or startup task scheduler
     // so if the service is not running, we need to start it (common on msix setup)
-    pub async fn start_service() -> Result<()> {
+    pub async fn start_service(_capability: &ShellEffectCapability) -> Result<()> {
         let Err(err) = Self::try_start_from_task_scheduler() else {
             return Ok(());
         };

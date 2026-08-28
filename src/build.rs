@@ -3,6 +3,8 @@ use std::{fs::create_dir, path::PathBuf};
 use slu_utils::{checksums::CheckSums, signature::sign_minisign};
 
 fn main() {
+    println!("cargo:rerun-if-changed=tauri.harness.conf.json");
+    println!("cargo:rerun-if-changed=harness/index.html");
     let _ = create_dir("gen");
 
     let mut checksums = CheckSums::new();

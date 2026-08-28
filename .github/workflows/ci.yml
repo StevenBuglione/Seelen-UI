@@ -3,6 +3,7 @@ name: Continuous Integration
 on:
   pull_request:
     branches:
+      - main
       - master
   workflow_call:
 
@@ -49,5 +50,8 @@ jobs:
           node: false
           deno: false
           cache-key-prefix: rust-test
+
+      - name: Agent OS M01 harness isolation
+        run: cargo test --locked --package seelen-ui --bin seelen-ui agent_os
 
       - run: cargo test --locked --verbose

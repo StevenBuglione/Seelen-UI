@@ -26,12 +26,14 @@ verifies postconditions.
 
 ## Safety order
 
-M00 records the unchanged baseline. M01 must establish runtime-mode isolation and a capability-based side-effect guard.
-M02 must establish Shell Studio and deterministic fixtures. Production shell design work cannot begin before both gates
-pass.
+M00 records the unchanged baseline. M01 establishes runtime-mode isolation, a sealed shell-effect capability, a
+fixture-only adapter, and a separately compiled Tauri Harness overlay. Harness construction checks the compiled
+application identifier before creating a window, so passing a Harness flag to a production-context binary fails closed.
+M02 must establish Shell Studio and deterministic UI fixtures. Production shell design work cannot begin before both
+gates pass.
 
-No Agent OS production behavior, protocol implementation, shell surface, runtime crate, Windows hook, or service change
-exists in M00.
+M01 changes bootstrap selection but preserves Production as the default and does not redesign any production shell
+surface, protocol, runtime crate, Windows hook, or service behavior.
 
 ## Repository ownership
 

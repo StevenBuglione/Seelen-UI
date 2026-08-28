@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![feature(never_type)]
 
+mod agent_os;
 mod app;
 mod backups;
 mod cli;
@@ -29,13 +30,16 @@ i18n!("background/i18n", fallback = "en");
 
 use std::sync::{atomic::AtomicBool, OnceLock};
 
+use agent_os::{RealShellAdapter, StartupArgs, StartupSelection};
 use app::SeelenUI;
+use clap::Parser;
 use cli::{handle_console_client, SelfPipe, ServicePipe};
 use error::Result;
 use exposed::register_invoke_handler;
 use logger::SeelenLogger;
 use session::application::SessionManager;
 use slu_ipc::messages::SvcAction;
+use tauri::Manager;
 use tauri_plugins::register_plugins;
 use utils::{
     integrity::{is_already_running, print_initial_information, restart_as_appx, warn_if_elevated},
@@ -66,13 +70,36 @@ pub fn get_tokio_handle() -> &'static tokio::runtime::Handle {
 
 #[tokio::main]
 async fn main() -> std::process::ExitCode {
+    let startup_args = match StartupArgs::try_parse() {
+        Ok(arguments) => arguments,
+        Err(error) => {
+            let _ = error.print();
+            return std::process::ExitCode::from(2);
+        }
+    };
+    let startup = match startup_args.select_bootstrap() {
+        Ok(startup) => startup,
+        Err(error) => {
+            eprintln!("Agent OS startup refused: {error}");
+            return std::process::ExitCode::from(2);
+        }
+    };
+
+    let effectful_bootstrap = match startup {
+        StartupSelection::Harness(harness_bootstrap) => {
+            return agent_os::run_harness(harness_bootstrap);
+        }
+        StartupSelection::Effectful(effectful_bootstrap) => effectful_bootstrap,
+    };
+    let shell_adapter = RealShellAdapter::new(effectful_bootstrap);
+
     if let Err(err) = SeelenLogger::init() {
         let fallback = std::env::temp_dir().join("seelen-ui-logger-error.log");
         let _ = std::fs::write(&fallback, format!("Failed to initialize logger: {err:?}"));
         return std::process::ExitCode::from(1);
     }
 
-    if let Err(err) = handle_console_client().await {
+    if let Err(err) = handle_console_client(&startup_args).await {
         log::error!("Failed to execute command: {err:?}");
         return std::process::ExitCode::from(1);
     };
@@ -95,7 +122,7 @@ async fn main() -> std::process::ExitCode {
     rust_i18n::set_locale(&seelen_core::state::Settings::get_app_language());
 
     let _ = CRONOMETER;
-    let mut app_builder = tauri::Builder::default();
+    let mut app_builder = tauri::Builder::default().manage(shell_adapter);
     app_builder = register_plugins(app_builder);
     app_builder = register_invoke_handler(app_builder);
 
@@ -109,7 +136,8 @@ async fn main() -> std::process::ExitCode {
             APP_HANDLE.set(app.handle().to_owned()).unwrap();
             tokio::spawn(async move {
                 let handle = get_app_handle();
-                if let Err(err) = setup(handle).await {
+                let adapter = handle.state::<RealShellAdapter>();
+                if let Err(err) = setup(handle, &adapter).await {
                     log::error!("Error while setting up: {err:?}");
                     handle.exit(1);
                 }
@@ -127,13 +155,22 @@ async fn main() -> std::process::ExitCode {
     std::process::ExitCode::from(exit_code as u8)
 }
 
-async fn setup(app_handle: &tauri::AppHandle<tauri::Wry>) -> Result<()> {
+async fn setup(
+    app_handle: &tauri::AppHandle<tauri::Wry>,
+    shell_adapter: &RealShellAdapter,
+) -> Result<()> {
+    let capability = shell_adapter.capability();
+    log::info!(
+        "Agent OS runtime mode: {}; namespace: {}",
+        capability.mode(),
+        shell_adapter.namespace().application_identifier
+    );
     print_initial_information();
-    create_main_folders()?;
+    create_main_folders(capability)?;
 
-    SelfPipe::start_listener()?;
+    SelfPipe::start_listener(capability)?;
     if !ServicePipe::is_running() {
-        ServicePipe::start_service().await?;
+        ServicePipe::start_service(capability).await?;
     }
     CRONOMETER.record("IPC");
 
@@ -164,7 +201,7 @@ async fn setup(app_handle: &tauri::AppHandle<tauri::Wry>) -> Result<()> {
     }
     CRONOMETER.record("Integrity check");
 
-    SeelenUI::start().await?;
+    SeelenUI::start(capability).await?;
     CRONOMETER.record("Start");
 
     warn_if_elevated(app_handle);
@@ -174,7 +211,7 @@ async fn setup(app_handle: &tauri::AppHandle<tauri::Wry>) -> Result<()> {
     Ok(())
 }
 
-fn create_main_folders() -> Result<()> {
+fn create_main_folders(_capability: &agent_os::ShellEffectCapability) -> Result<()> {
     std::fs::create_dir_all(SEELEN_COMMON.app_temp_dir())?;
     std::fs::create_dir_all(SEELEN_COMMON.app_data_dir())?;
     std::fs::create_dir_all(SEELEN_COMMON.app_cache_dir())?;

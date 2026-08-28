@@ -9,8 +9,10 @@ Agent OS is governed by
 it completely before modifying Agent OS code, and execute milestones serially. The M00 baseline is pinned in
 [`UPSTREAM_BASELINE.md`](UPSTREAM_BASELINE.md).
 
-- Default UI development will be `just studio` after M02. Until the safe modes exist, do not run `npm run dev`,
-  `npm run tauri dev`, `tauri dev`, or the compiled Seelen executables on a developer workstation.
+- Default UI development will be `just studio` after M02. The only authorized native loop on a developer workstation is
+  M01 Harness Mode through `npm run harness`; run `npm run harness:verify` after harness/bootstrap changes. Do not run
+  `npm run dev`, generic `tauri dev`, a compiled production-context Seelen executable, Integration Mode, or Production
+  Mode on the developer workstation.
 - Never install Seelen, enable or change autostart, hide or alter the native taskbar, register global Windows hooks or
   shortcuts, register AppBars, start or alter the Seelen service, run updater/installer code, or run Agent OS
   Integration/Production Mode on the developer's daily Windows session.

@@ -7,6 +7,7 @@ use windows::Win32::System::TaskScheduler::{ITaskService, TaskScheduler};
 use seelen_core::state::shortcuts::resolve_shortcuts;
 
 use crate::{
+    agent_os::ShellEffectCapability,
     cli::ServicePipe,
     error::{Result, ResultLogExt},
     hook::register_win_hook,
@@ -53,7 +54,7 @@ pub struct SeelenUI {}
 
 /* ============== Methods ============== */
 impl SeelenUI {
-    pub async fn start() -> Result<()> {
+    pub async fn start(_capability: &ShellEffectCapability) -> Result<()> {
         Migrations::run()?;
 
         // RESOURCES and FULL_STATE have no mutual dependency at init time;

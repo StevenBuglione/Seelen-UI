@@ -6,6 +6,7 @@ use slu_ipc::{
 };
 
 use crate::{
+    agent_os::ShellEffectCapability,
     cli::{process_app_command, uri::process_uri},
     error::{Result, ResultLogExt},
     modules::system_tray::SystemTrayManager,
@@ -68,7 +69,7 @@ impl SelfPipe {
         IpcResponse::Success
     }
 
-    pub fn start_listener() -> Result<()> {
+    pub fn start_listener(_capability: &ShellEffectCapability) -> Result<()> {
         AppIpc::start(Self::handle_message)?;
         Ok(())
     }

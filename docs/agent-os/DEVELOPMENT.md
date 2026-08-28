@@ -2,12 +2,29 @@
 
 ## Safe default
 
-Until M01 and M02 are complete, there is no safe native Agent OS development command. Do not run the current Seelen
-development or production startup on a developer workstation. Build and static/test commands are allowed only when they
-do not execute Seelen binaries.
+M01 provides one safe native command: `npm run harness`. It compiles the shell with `src/tauri.harness.conf.json`,
+verifies the Harness identifier before constructing Tauri, and opens a normal fixture-only window. It does not register
+production plugins, invoke handlers, pipes, services, hooks, shortcuts, AppBars, autostart, updater logic, or production
+data paths.
 
-After M02, `just studio` becomes the default UI loop and must not compile Rust. Harness, Integration, Production, and
-Safe Mode commands are added only in their assigned milestones.
+Use `npm run harness:verify` after any bootstrap, adapter, Tauri configuration, or side-effect-boundary change. It opens
+the Harness briefly and requires unchanged before/after fingerprints for the native taskbar, Seelen processes/services,
+scheduled task, matching run keys and named pipes, and production roaming/local/temp trees.
+
+Do not invoke `cargo run -- --agent-os-mode harness` directly: a production-context build fails closed by design. Do not
+run `npm run dev`, generic `tauri dev`, Integration Mode, or Production Mode on a developer workstation.
+
+After M02, `just studio` becomes the default UI loop and must not compile Rust. Integration requires both the explicit
+CLI acknowledgement and `AGENT_OS_DISPOSABLE_ENVIRONMENT=1`, and remains restricted to a disposable Windows environment.
+Studio fails closed in the native binary; Safe Mode remains reserved and fails closed until M12.
+
+## M01 commands
+
+```powershell
+cargo check --locked --package seelen-ui --bin seelen-ui
+cargo test --locked --package seelen-ui --bin seelen-ui agent_os
+npm run harness:verify
+```
 
 ## Branches
 

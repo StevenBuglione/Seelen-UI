@@ -1,0 +1,64 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "Agent OS Shell Harness",
+  "identifier": "com.agent-os.shell-harness",
+  "version": "../package.json",
+  "app": {
+    "windows": [
+      {
+        "label": "agent-os-harness",
+        "create": false,
+        "title": "Agent OS Shell Harness",
+        "url": "index.html",
+        "width": 1120,
+        "height": 760,
+        "minWidth": 800,
+        "minHeight": 560,
+        "center": true,
+        "decorations": true,
+        "resizable": true,
+        "fullscreen": false,
+        "transparent": false,
+        "alwaysOnTop": false,
+        "skipTaskbar": false,
+        "dataDirectory": "agent-os-shell-harness-webview2"
+      }
+    ],
+    "security": {
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "harness/**/*"
+        ]
+      },
+      "capabilities": [
+        {
+          "identifier": "agent-os-harness-no-ipc",
+          "description": "Harness window has no production Tauri command or plugin permissions",
+          "local": true,
+          "windows": [
+            "agent-os-harness"
+          ],
+          "permissions": []
+        }
+      ],
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    },
+    "withGlobalTauri": false
+  },
+  "build": {
+    "beforeDevCommand": null,
+    "beforeBuildCommand": null,
+    "devUrl": null,
+    "frontendDist": "harness",
+    "features": []
+  },
+  "bundle": {
+    "active": false,
+    "createUpdaterArtifacts": false
+  },
+  "plugins": {
+    "updater": null,
+    "deep-link": null
+  }
+}

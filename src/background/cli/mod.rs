@@ -12,6 +12,7 @@ use std::sync::atomic::Ordering;
 use slu_ipc::{commands::AppCommand, messages::AppMessage, AppIpc};
 
 use crate::{
+    agent_os::StartupArgs,
     error::Result,
     resources::cli as resources_cli,
     virtual_desktops::cli as vd_cli,
@@ -25,38 +26,21 @@ use crate::{
 /// WARNING: seelen-ui.exe CLI commands are deprecated.
 ///
 /// Use `slu` instead.
-#[derive(Debug, clap::Parser)]
-#[command(version, name = "Seelen UI")]
-struct MainCli {
-    #[arg(long, default_value_t)]
-    silent: bool,
-    #[arg(long, default_value_t)]
-    verbose: bool,
-    /// Path or URI to open (e.g. from the Windows protocol handler).
-    uri: Option<String>,
-}
-
 /// Called at startup by the main executable. If a URI is present it is forwarded
 /// to the running instance via IPC and the process exits; otherwise returns Ok(())
 /// so normal app startup continues.
-pub async fn handle_console_client() -> Result<()> {
-    use clap::Parser;
-    let cli = match MainCli::try_parse() {
-        Ok(cli) => cli,
-        Err(e) => e.exit(),
-    };
-
-    if cli.silent {
+pub async fn handle_console_client(startup_args: &StartupArgs) -> Result<()> {
+    if startup_args.silent() {
         crate::SILENT.store(true, Ordering::SeqCst);
     }
-    if cli.verbose {
+    if startup_args.verbose() {
         crate::VERBOSE.store(true, Ordering::SeqCst);
         println!("Received args: {:#?}", std::env::args().collect::<Vec<_>>());
-        println!("Parsed CLI: {cli:#?}");
+        println!("Parsed CLI: {startup_args:#?}");
     }
 
-    if let Some(uri) = cli.uri {
-        AppIpc::send(AppMessage::OpenUri(uri))
+    if let Some(uri) = startup_args.uri() {
+        AppIpc::send(AppMessage::OpenUri(uri.to_owned()))
             .await
             .map_err(|_| "Can't establish connection, ensure Seelen UI is running.")?;
         std::process::exit(0);

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" data-runtime-mode="harness">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Agent OS Shell Harness</title>
+    <style>
+    :root {
+      font-family:
+        "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+      color: #e8edf5;
+      background: #11151c;
+    }
+    body {
+      display: grid;
+      min-height: 100vh;
+      margin: 0;
+      place-items: center;
+    }
+    main {
+      width: min(42rem, calc(100vw - 4rem));
+      padding: 2.5rem;
+      border: 1px solid #344054;
+      border-radius: 1rem;
+      background: #181e28;
+      box-shadow: 0 1.5rem 4rem #0008;
+    }
+    p {
+      color: #b8c2d3;
+      line-height: 1.6;
+    }
+    code {
+      color: #9bdcff;
+    }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p><code>RuntimeMode::Harness</code></p>
+      <h1>Agent OS Shell Harness</h1>
+      <p>
+        Fixture adapters are active. Production pipes, data directories,
+        services, hooks, shortcuts, AppBars, taskbar changes, autostart, and
+        updater logic are not connected.
+      </p>
+    </main>
+  </body>
+</html>
