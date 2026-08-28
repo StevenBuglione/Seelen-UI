@@ -1,6 +1,6 @@
 # ADR 0007: Shell-first Omarchy experience before Agent OS surfaces
 
-- Status: accepted for revised M02 candidate review
+- Status: accepted
 - Date: 2026-08-27
 
 ## Decision
@@ -24,5 +24,5 @@ scripts, Linux services, hooks, installers, autostart, and IPC are not imported 
   typed native behavior.
 - All later Agent surfaces must feel native to the approved shell and remain absent until the shell baseline passes
   human visual review.
-- The written M03 presentation sequence now requires an explicit reconciliation with this user-approved shell-first
-  direction; M03 is not started by this ADR.
+- M03 must reconcile its presentation sequence with this user-approved shell-first direction and layer Agent surfaces
+  into the approved tokens and contextual-surface grammar.

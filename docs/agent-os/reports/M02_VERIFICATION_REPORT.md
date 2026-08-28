@@ -5,7 +5,7 @@
 - Base: verified M01 shell commit `7cedb8be398aec8a179e17c9df12001aa1b74821`
 - Host: Windows 11 x64
 - Production/native shell startup executed: no
-- Status: revised shell-first candidate complete; human snapshot review pending
+- Status: complete; human snapshot review approved
 
 ## Implemented contract
 
@@ -32,18 +32,18 @@
 
 ## Automated verification ledger
 
-| Gate                               | Result     | Evidence                                                                                                                                           |
-| ---------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run test`                     | PASS       | 8 unit/policy tests cover fixtures, determinism, replay, browser-only source, commands, baselines, 22 palettes, and shell evidence.                |
-| `npm run type-check`               | PASS       | TypeScript and Svelte report 0 errors and 0 warnings; generated core types also pass Deno check.                                                   |
-| `npm run studio:build`             | PASS       | Vite production build completes without Cargo/Tauri.                                                                                               |
-| `npm run studio:test:interactions` | PASS       | 9 suites cover 26 fixtures plus shell panels, launcher flow, themes, workspaces, layouts, keyboard focus, fake time, and center-bar geometry.      |
-| Explicit snapshot generation       | PASS       | 33 Windows PNG and 32 ARIA YAML candidates generated only by the dedicated update command, including a zero-diff top-bar regression baseline.      |
-| `npm run studio:test`              | PASS       | 8 unit tests and 74 Playwright comparisons/interactions passed after candidate generation.                                                         |
-| In-app browser inspection          | PASS       | Desktop, launcher, quick settings, overview, light palette, accessibility tree, and interactions inspected; browser console has 0 warnings/errors. |
-| Product Design source comparison   | PASS       | Omarchy source and browser implementation compared in normalized full and focused images; five-pass report ends `passed` in `design-qa.md`.        |
-| `just` recipe dry runs             | PASS       | Studio recipes resolve only to npm/Vite/Playwright and contain no Cargo/Tauri invocation.                                                          |
-| Windows snapshot CI                | CONFIGURED | Windows 2025, Node 24, and compare-only Studio tests; hosted execution awaits a pull request.                                                      |
+| Gate                               | Result     | Evidence                                                                                                                                                                    |
+| ---------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run test`                     | PASS       | 8 unit/policy tests cover fixtures, determinism, replay, browser-only source, commands, baselines, 22 palettes, and shell evidence.                                         |
+| `npm run type-check`               | PASS       | TypeScript and Svelte report 0 errors and 0 warnings; generated core types also pass Deno check.                                                                            |
+| `npm run studio:build`             | PASS       | Vite production build completes without Cargo/Tauri.                                                                                                                        |
+| `npm run studio:test:interactions` | PASS       | 10 suites cover 26 fixtures plus shell panels, launcher flow, themes, workspaces, layouts, keyboard focus, fake time, center-bar geometry, and full-monitor scrim geometry. |
+| Explicit snapshot generation       | PASS       | 33 Windows PNG and 32 ARIA YAML candidates generated only by the dedicated update command, including a zero-diff top-bar regression baseline.                               |
+| `npm run studio:test`              | PASS       | 8 unit tests and 75 Playwright comparisons/interactions passed after candidate generation.                                                                                  |
+| In-app browser inspection          | PASS       | Desktop, launcher, quick settings, overview, light palette, accessibility tree, and interactions inspected; browser console has 0 warnings/errors.                          |
+| Product Design source comparison   | PASS       | Omarchy source and browser implementation compared in normalized full and focused images; five-pass report ends `passed` in `design-qa.md`.                                 |
+| `just` recipe dry runs             | PASS       | Studio recipes resolve only to npm/Vite/Playwright and contain no Cargo/Tauri invocation.                                                                                   |
+| Windows snapshot CI                | CONFIGURED | Windows 2025, Node 24, and compare-only Studio tests; hosted execution awaits a pull request.                                                                               |
 
 The final dependency audit reports 3 inherited transitive findings (1 low, 2 high) in `body-parser`, `adm-zip`, and
 `deepl-node`. The direct Vite advisories encountered during implementation were eliminated by pinning Vite 8.2.2 and
@@ -55,12 +55,12 @@ changed by M02.
 
 ## Acceptance audit
 
-| M02 criterion                                                     | Status  | Verification                                                                                    |
-| ----------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
-| UI change/open/inspect/screenshot/compare without Rust or Windows | PASS    | Browser-only commands, source policy, build, Playwright, and direct browser inspection passed.  |
-| All required base fixtures render                                 | PASS    | All 26 names render through the shared package and have matching visual/ARIA candidates.        |
-| Snapshot updates are explicit                                     | PASS    | A single dedicated update command exists; policy tests prove CI/normal commands cannot call it. |
-| Initial baselines reviewed by a human                             | PENDING | The handoff requires human review; candidate files are ready under `tools/shell-studio/tests`.  |
+| M02 criterion                                                     | Status | Verification                                                                                                              |
+| ----------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------- |
+| UI change/open/inspect/screenshot/compare without Rust or Windows | PASS   | Browser-only commands, source policy, build, Playwright, and direct browser inspection passed.                            |
+| All required base fixtures render                                 | PASS   | All 26 names render through the shared package and have matching visual/ARIA candidates.                                  |
+| Snapshot updates are explicit                                     | PASS   | A single dedicated update command exists; policy tests prove CI/normal commands cannot call it.                           |
+| Initial baselines reviewed by a human                             | PASS   | The user approved the final browser candidate on 2026-08-27 after reviewing Vantablack and Catppuccin Latte panel states. |
 
 ## Revised visual-direction audit
 
@@ -75,6 +75,9 @@ that the reviewed bar was still too tall and its control treatment could cross t
 verifies the corrected 20-pixel bar, contained 18-pixel controls, and inset focus treatment. A fourth pass corrected
 inherited Studio minimum-height styling that displaced the bar icons and verifies their centered alignment. A fifth pass
 scoped a Studio-only clock-control margin that displaced the center readout and added a half-pixel geometry guard. No
-P0, P1, or P2 finding remains. Two P3 follow-ups remain documented for future disposable-environment fidelity work.
+P0, P1, or P2 finding remains. A final light-theme review found that the panel scrim retained the obsolete 40-pixel bar
+inset. Commit `75b3c3b19be4bdbdc8dace36f0a7319131eeec3b` makes the scrim cover the exact desktop bounds and adds an
+interaction geometry guard. Two P3 follow-ups remain documented for future disposable-environment fidelity work.
 
-M03 must not begin until the human reviewer accepts or requests changes to the 33 visual and 32 ARIA candidates.
+The user accepted the corrected shell candidate and explicitly authorized completing M02 and beginning M03. All M02
+acceptance criteria are satisfied.

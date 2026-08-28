@@ -32,8 +32,8 @@ application identifier before creating a window, so passing a Harness flag to a 
 M02 adds the shared Svelte package and a browser-only Shell Studio with deterministic fixture state, fake
 time/IDs/random values/latency, `.aostrace` replay, inspectable `AgentRuntimeState`/`SurfacePlan`, and Windows
 visual/ARIA comparison. Its preview renderer is deliberately a fixture surrogate; the production design system and
-native surface entrypoints remain owned by M03. M02 acceptance is not complete until a human approves its initial
-snapshot baselines.
+native surface entrypoints remain owned by M03. The user approved the corrected initial snapshot baselines on
+2026-08-27, completing M02 and authorizing the serial transition to M03.
 
 M01 changes bootstrap selection but preserves Production as the default and does not redesign any production shell
 surface, protocol, runtime crate, Windows hook, or service behavior.
