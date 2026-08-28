@@ -1,0 +1,51 @@
+name: Agent OS upstream sync
+
+on:
+  schedule:
+    - cron: "17 13 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: agent-os-upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the mirror branch
+        uses: actions/checkout@v4
+        with:
+          ref: upstream-master
+          fetch-depth: 0
+
+      - name: Fast-forward the canonical mirror
+        run: |
+          git remote add upstream https://github.com/eythaann/Seelen-UI.git
+          git fetch --no-tags upstream master
+          git merge --ff-only upstream/master
+          git push origin HEAD:upstream-master
+
+      - name: Open or retain the upstream review pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch origin main upstream-master
+          if git diff --quiet origin/main...origin/upstream-master; then
+            echo "main already contains upstream-master"
+            exit 0
+          fi
+          existing="$(gh pr list --state open --base main --head upstream-master --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            echo "upstream sync pull request #$existing is already open"
+            exit 0
+          fi
+          gh pr create \
+            --base main \
+            --head upstream-master \
+            --title "chore(upstream): sync Seelen master" \
+            --body "Automated fast-forward mirror update. Do not merge until shell, harness, visual, and Windows integration gates required by docs/agent-os/UPSTREAM_INTEGRATION.md pass."

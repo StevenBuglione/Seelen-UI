@@ -2,6 +2,28 @@
 
 Guidance for AI agents working in this repository.
 
+## Agent OS work (non-negotiable)
+
+Agent OS is governed by
+[`docs/agent-os/AGENT_OS_CODEX_IMPLEMENTATION_HANDOFF.md`](docs/agent-os/AGENT_OS_CODEX_IMPLEMENTATION_HANDOFF.md). Read
+it completely before modifying Agent OS code, and execute milestones serially. The M00 baseline is pinned in
+[`UPSTREAM_BASELINE.md`](UPSTREAM_BASELINE.md).
+
+- Default UI development will be `just studio` after M02. Until the safe modes exist, do not run `npm run dev`,
+  `npm run tauri dev`, `tauri dev`, or the compiled Seelen executables on a developer workstation.
+- Never install Seelen, enable or change autostart, hide or alter the native taskbar, register global Windows hooks or
+  shortcuts, register AppBars, start or alter the Seelen service, run updater/installer code, or run Agent OS
+  Integration/Production Mode on the developer's daily Windows session.
+- Do not use `cargo build --release` for ordinary iteration. Use `cargo check` after Rust changes, then focused tests.
+- Every UI state requires a deterministic fixture, reviewed visual snapshot, and ARIA snapshot. Do not update snapshots
+  automatically unless the task explicitly authorizes reviewed visual changes.
+- Every model-facing action requires a typed schema, fake backend, risk classification, policy tests, before/after
+  observation, postcondition verification, an explicit undo decision, and a replay fixture.
+- Do not bypass Agent OS policy with PowerShell, Tauri shell APIs, raw Win32 input, or unrestricted Seelen commands.
+- Record every upstream-sensitive change in [`UPSTREAM_PATCHES.md`](UPSTREAM_PATCHES.md).
+- Stop a milestone immediately when one of its safety acceptance criteria fails. Do not begin a later milestone early.
+- Keep milestone commits reviewable; do not combine safe-harness work with production-shell redesign.
+
 Seelen UI is a customizable Windows desktop environment built with:
 
 - Rust + Tauri (backend)
