@@ -160,3 +160,30 @@ test("top bar center readout shares the bar vertical midpoint", async ({ page })
     expect(Math.abs(offset), JSON.stringify({ bar, center, clock, weather, offsets })).toBeLessThanOrEqual(0.5);
   }
 });
+
+test("light-theme panel scrim covers the entire monitor surface", async ({ page }) => {
+  await openShell(page);
+  await page.getByLabel("Omarchy theme", { exact: true }).selectOption("catppuccin-latte");
+  await page.getByRole("button", { name: "Open quick settings", exact: true }).click();
+
+  const desktop = await page.locator(".desktop").boundingBox();
+  const scrim = await page.locator(".panel-scrim").boundingBox();
+  const topBarZIndex = await page.locator(".top-bar")
+    .evaluate((element) => Number(getComputedStyle(element).zIndex));
+  const scrimZIndex = await page.locator(".panel-scrim")
+    .evaluate((element) => Number(getComputedStyle(element).zIndex));
+
+  expect(desktop).not.toBeNull();
+  expect(scrim).not.toBeNull();
+
+  const edgeOffsets = {
+    top: scrim!.y - desktop!.y,
+    right: scrim!.x + scrim!.width - (desktop!.x + desktop!.width),
+    bottom: scrim!.y + scrim!.height - (desktop!.y + desktop!.height),
+    left: scrim!.x - desktop!.x,
+  };
+  for (const offset of Object.values(edgeOffsets)) {
+    expect(Math.abs(offset), JSON.stringify({ desktop, scrim, edgeOffsets })).toBeLessThanOrEqual(0.5);
+  }
+  expect(scrimZIndex).toBeGreaterThan(topBarZIndex);
+});

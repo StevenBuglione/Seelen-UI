@@ -1148,10 +1148,12 @@
   .panel-scrim {
     position: absolute;
     z-index: 35;
-    inset: 40px 0 0;
-    width: 100%;
+    inset: 0;
+    width: auto;
     height: auto;
+    padding: 0;
     border: 0;
+    border-radius: 0;
     background: rgba(0, 0, 0, 0.24);
     cursor: default;
   }
