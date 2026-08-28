@@ -5,8 +5,9 @@ import type { ShellLayout, ShellPanel, ShellWorkspaceId } from "../../../libs/ag
 export async function openFixture(
   page: Page,
   fixture: FixtureName,
+  options: { invoke?: boolean } = {},
 ): Promise<void> {
-  const theme = fixture === "high-contrast" ? "high-contrast" : "dark";
+  const theme = fixture === "high-contrast" ? "high-contrast" : fixture === "light-theme" ? "light" : "dark";
   const motion = fixture === "reduced-motion" ? "reduced" : "normal";
   await page.goto(`/?mode=fixtures&fixture=${fixture}&theme=${theme}&motion=${motion}`);
   await expect(page.locator('[data-studio-ready="true"]')).toBeVisible();
@@ -14,6 +15,12 @@ export async function openFixture(
     "data-fixture",
     fixture,
   );
+  if (options.invoke ?? true) {
+    await page.getByRole("button", { name: "Open Agent OS", exact: true })
+      .click();
+    await expect(page.locator('[data-testid="preview-canvas"]'))
+      .toHaveAttribute("data-agent-open", "true");
+  }
 }
 
 export async function openShell(

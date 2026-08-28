@@ -23,7 +23,7 @@ Integration requires both the explicit CLI acknowledgement and `AGENT_OS_DISPOSA
 restricted to a disposable Windows environment. Studio fails closed in the native binary; Safe Mode remains reserved and
 fails closed until M12.
 
-## M02 commands
+## M03 commands
 
 ```powershell
 just studio
@@ -33,6 +33,11 @@ just studio-update-snapshots # explicit candidate generation; requires human rev
 
 Snapshot comparison runs on the pinned Windows CI image. No normal command updates baselines: the update flag exists
 only behind `studio-update-snapshots`, which is absent from `check`, CI, and every other recipe.
+
+The fixtures route keeps Agent UI dormant on load. Click the small Agent control in the active monitor's top bar or
+press `Ctrl+Shift+Space` while Studio has focus to reveal the selected deterministic surface. This shortcut is local to
+the browser page and is not a production/global keyboard registration. The shell-only route remains available from the
+Preview selector for M02 regression comparison.
 
 ## M01 commands
 
@@ -57,11 +62,11 @@ reserved until their named milestone.
 
 ```text
 docs/agent-os/                  architecture, security, development, decisions, reports
-libs/agent-shell-ui/            shared Svelte 5 surfaces and ports (M02)
+libs/agent-shell-ui/            shared Svelte 5 ports (M02) and Agent design system/surfaces (M03)
 libs/agent-runtime-client/      generated/runtime client adapter (M04)
 tools/shell-studio/             browser-only safe UI loop (M02)
 src/background/modules/agent_os/ modern Seelen backend module (M07)
-src/ui/svelte/agent_*/          thin widget/harness entrypoints (M03+)
+src/ui/svelte/agent_*/          thin native widget entrypoints (reserved for later authorized integration)
 ```
 
 Do not create later-milestone source skeletons merely to fill this layout. A directory appears with the milestone that

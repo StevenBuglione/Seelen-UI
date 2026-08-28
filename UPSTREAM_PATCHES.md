@@ -39,3 +39,16 @@ installer, updater implementation, generated binding, or production UI design.
 
 M02 does not add a native widget entrypoint, Tauri command, production shell surface, runtime protocol, Windows hook,
 service behavior, updater/installer path, or Agent OS production design system.
+
+## M03
+
+| Area                      | Paths                                                                                          | Reason                                                                                          | Production behavior changed? |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------- |
+| Agent design system       | `libs/agent-shell-ui/src/design-system/**`, `components/**`, `accessibility/**`                | Add versioned semantic tokens, reusable controls, progress, hidden text, and focus containment  | No                           |
+| Presentation and surfaces | `libs/agent-shell-ui/src/presentation/**`, `state/**`, `surfaces/**`, `ports/shell-adapter.ts` | Add deterministic six-surface plans, top-bar invocation, active-monitor placement, and collapse | No                           |
+| Browser verification      | `tools/shell-studio/**`, `libs/agent-shell-ui/tests/**`                                        | Add 29 visual/ARIA fixtures and interaction, scaling, keyboard, and reduced-motion coverage     | No                           |
+| Project records           | `docs/agent-os/**`, `UPSTREAM_PATCHES.md`                                                      | Record the M03 layering decision, browser-only boundary, evidence, and human review gate        | No                           |
+
+M03 changes only the browser Studio and shared preview package. It does not add a native widget entrypoint, Tauri
+command, runtime transport, global shortcut, Windows hook, service behavior, AppBar, updater/installer path, or
+production shell change.

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Snippet } from "svelte";
   import OmarchyIcon from "../components/OmarchyIcon.svelte";
   import type { OmarchyIconName } from "../components/omarchy-icon-types.ts";
   import wallpaperUrl from "../assets/omarchy/vantablack-layers-deep.webp?url";
@@ -17,6 +18,9 @@
     panel?: ShellPanel;
     layout?: ShellLayout;
     workspace?: ShellWorkspaceId;
+    activeMonitor?: 1 | 2;
+    agentControl?: Snippet<[monitorIndex: number]>;
+    agentOverlay?: Snippet<[monitorIndex: number]>;
     onPanelChange?: (panel: ShellPanel) => void;
     onLayoutChange?: (layout: ShellLayout) => void;
     onWorkspaceChange?: (workspace: ShellWorkspaceId) => void;
@@ -88,6 +92,9 @@
     panel = "none",
     layout = "dwindle",
     workspace = 1,
+    activeMonitor = 1,
+    agentControl,
+    agentOverlay,
     onPanelChange = () => {},
     onLayoutChange = () => {},
     onWorkspaceChange = () => {},
@@ -108,6 +115,7 @@
     apps.filter((app) => app.name.toLowerCase().includes(query.trim().toLowerCase())),
   );
   const windows = $derived(workspaceWindows[workspace]);
+  const activeMonitorIndex = $derived(activeMonitor - 1);
 
   function togglePanel(next: Exclude<ShellPanel, "none">): void {
     onPanelChange(panel === next ? "none" : next);
@@ -153,8 +161,8 @@
 >
   <div class="monitor-grid" class:multi-monitor={monitorCount === 2}>
     {#each Array.from({ length: monitorCount }) as _, monitorIndex}
-      <article class="monitor" aria-label={`Shell monitor ${monitorIndex + 1}`}>
-        <div class="desktop" style={`--shell-wallpaper:url("${wallpaperUrl}")`} inert={monitorIndex !== 0}>
+      <article class="monitor" class:active-monitor={monitorIndex === activeMonitorIndex} aria-label={`Shell monitor ${monitorIndex + 1}${monitorIndex === activeMonitorIndex ? ", active" : ""}`}>
+        <div class="desktop" style={`--shell-wallpaper:url("${wallpaperUrl}")`} inert={monitorIndex !== activeMonitorIndex}>
           <header class="top-bar" aria-label="Desktop top bar">
             <div class="bar-zone bar-left">
               <button
@@ -197,6 +205,10 @@
             </div>
 
             <div class="bar-zone bar-right">
+              {#if agentControl}
+                {@render agentControl(monitorIndex)}
+                <span class="agent-separator" aria-hidden="true"></span>
+              {/if}
               <button
                 type="button"
                 class:active={panel === "notifications"}
@@ -253,7 +265,7 @@
                   <div class="window-body">
                     {#if shellWindow.kind === "terminal"}
                       <div class="terminal-view">
-                        <p><span>steve</span>@agent-os <em>codex/M02-shared-ui-shell-studio</em></p>
+                        <p><span>steve</span>@agent-os <em>codex/M03-agent-os-design-system</em></p>
                         <p class="command-line">› npm run studio</p>
                         <p class="terminal-success">VITE ready in 412 ms</p>
                         <p>Local: http://127.0.0.1:4173/</p>
@@ -262,7 +274,7 @@
                         <p><em>?</em> libs/agent-shell-ui/src/themes/omarchy.ts</p>
                         <p><em>?</em> docs/agent-os/upstream/omarchy.lock.json</p>
                         <p class="command-line">› npm run studio:test:interactions</p>
-                        <p class="terminal-success">8 passed · 0 failed · 5.2s</p>
+                        <p class="terminal-success">M03 browser gates green</p>
                         <p class="terminal-rule">────────────────────────────────────</p>
                         <p>theme <span>vantablack</span> &nbsp; layout <span>dwindle</span></p>
                         <p>source <em>basecamp/omarchy@83881e9</em></p>
@@ -283,7 +295,7 @@
                             <li><span class="syntax-dim">&lt;section</span> class=<span class="syntax-value">"shell-experience"</span><span class="syntax-dim">&gt;</span></li>
                             <li>  <span class="syntax-key">&lt;TopBar</span> source=<span class="syntax-value">"omarchy"</span> <span class="syntax-key">/&gt;</span></li>
                             <li>  <span class="syntax-key">&lt;Workspace</span> layout={layout} theme=<span class="syntax-value">shell</span> <span class="syntax-key">/&gt;</span></li>
-                            <li>  <span class="syntax-key">&lt;ContextPanels</span> mode=<span class="syntax-value">"deferred"</span> <span class="syntax-key">/&gt;</span></li>
+                            <li>  <span class="syntax-key">&lt;AgentSurfaceLayer</span> activeMonitor=<span class="syntax-value">plan.activeMonitor</span> <span class="syntax-key">/&gt;</span></li>
                             <li><span class="syntax-dim">&lt;/section&gt;</span></li>
                           </ol>
                         </div>
@@ -319,7 +331,7 @@
                       <div class="notes-view">
                         <p class="note-date">Wednesday · August 27</p>
                         <h3>Shell baseline</h3>
-                        <ul><li>Omarchy bar and workspace grammar</li><li>Contextual panels, never a dashboard</li><li>Agent layer remains deferred</li></ul>
+                        <ul><li>Omarchy bar and workspace grammar</li><li>Contextual panels, never a dashboard</li><li>Agent surfaces follow the active monitor</li></ul>
                       </div>
                     {/if}
                   </div>
@@ -328,11 +340,11 @@
             </div>
           </main>
 
-          {#if panel !== "none" && monitorIndex === 0}
+          {#if panel !== "none" && monitorIndex === activeMonitorIndex}
             <button class="panel-scrim" type="button" aria-label="Close panel" onclick={() => onPanelChange("none")}></button>
           {/if}
 
-          {#if panel === "launcher" && monitorIndex === 0}
+          {#if panel === "launcher" && monitorIndex === activeMonitorIndex}
             <section class="shell-panel launcher-panel" aria-label="Application launcher">
               <header class="launcher-search">
                 <OmarchyIcon name="search" size={16} />
@@ -353,7 +365,7 @@
               </div>
               <footer><span><OmarchyIcon name="command" size={12} /> Ctrl Space</span><span>Launch selected app</span></footer>
             </section>
-          {:else if panel === "calendar" && monitorIndex === 0}
+          {:else if panel === "calendar" && monitorIndex === activeMonitorIndex}
             <section class="shell-panel calendar-panel" aria-label="Calendar and agenda">
               <header><div><p>Wednesday</p><h2>August 27</h2></div><div class="weather-large"><OmarchyIcon name="cloudSun" size={22} /><span><strong>72°</strong><small>Clear</small></span></div></header>
               <div class="calendar-grid" aria-label="August 2026 calendar">
@@ -368,7 +380,7 @@
                 <div><time>17:00</time><span><strong>Daily wrap</strong><small>Personal</small></span></div>
               </div>
             </section>
-          {:else if panel === "quick-settings" && monitorIndex === 0}
+          {:else if panel === "quick-settings" && monitorIndex === activeMonitorIndex}
             <section class="shell-panel quick-settings-panel" aria-label="Quick settings">
               <header><span class="user-avatar"><OmarchyIcon name="user" size={22} /></span><div><strong>Steve</strong><small>Agent OS workstation</small></div><button type="button" aria-label="Open settings"><OmarchyIcon name="settings" size={15} /></button></header>
               <div class="quick-toggles">
@@ -386,7 +398,7 @@
               </div>
               <footer><button type="button"><OmarchyIcon name="power" size={14} /> Power</button><button type="button"><OmarchyIcon name="reset" size={14} /> Restart shell</button></footer>
             </section>
-          {:else if panel === "notifications" && monitorIndex === 0}
+          {:else if panel === "notifications" && monitorIndex === activeMonitorIndex}
             <section class="shell-panel notifications-panel" aria-label="Notifications">
               <header><div><p>Notifications</p><h2>Today</h2></div><button type="button">Clear all</button></header>
               <article><span class="notification-icon"><OmarchyIcon name="shield" size={16} /></span><div><strong>Windows Security</strong><p>No new threats were found.</p><time>2 min ago</time></div></article>
@@ -394,7 +406,7 @@
               <article><span class="notification-icon"><OmarchyIcon name="calendar" size={16} /></span><div><strong>Shell review</strong><p>Design review begins in 30 minutes.</p><time>1 hr ago</time></div></article>
               <footer><OmarchyIcon name="moon" size={13} /> Do not disturb is off</footer>
             </section>
-          {:else if panel === "overview" && monitorIndex === 0}
+          {:else if panel === "overview" && monitorIndex === activeMonitorIndex}
             <section class="overview-panel" aria-label="Workspace overview">
               <header><div><p>Workspace overview</p><h2>Choose where to work</h2></div><div class="layout-switcher" aria-label="Window layout">
                 {#each ["dwindle", "master", "columns", "monocle"] as layoutName}
@@ -419,8 +431,12 @@
             </section>
           {/if}
 
-          {#if launchedApp && monitorIndex === 0}
+          {#if launchedApp && monitorIndex === activeMonitorIndex}
             <div class="launch-toast" role="status"><OmarchyIcon name="check" size={14} /><span><strong>{launchedApp}</strong> opened in {workspaceNames[workspace]}</span><button type="button" aria-label="Dismiss launch notification" onclick={() => (launchedApp = null)}><OmarchyIcon name="close" size={12} /></button></div>
+          {/if}
+
+          {#if agentOverlay}
+            {@render agentOverlay(monitorIndex)}
           {/if}
 
           <div class="shell-safety-note">Studio simulation · no native shell connection</div>
@@ -471,11 +487,12 @@
     border-radius: 10px;
     background: var(--shell-background);
     box-shadow: 0 22px 70px rgba(0, 0, 0, 0.48);
+    container-type: inline-size;
   }
 
   .desktop {
     position: relative;
-    min-height: 640px;
+    min-height: clamp(440px, 56.25cqw, 640px);
     overflow: hidden;
     background-color: var(--shell-background);
     background-image: var(--shell-wallpaper);
@@ -485,7 +502,7 @@
   }
 
   .multi-monitor .desktop {
-    min-height: 440px;
+    min-height: clamp(360px, 65cqw, 440px);
   }
 
   .desktop::before {
@@ -662,6 +679,13 @@
   .bar-separator {
     width: 1px;
     height: 9px;
+    background: color-mix(in srgb, var(--shell-foreground) 12%, transparent);
+  }
+
+  .agent-separator {
+    width: 1px;
+    height: 9px;
+    margin: 0 2px;
     background: color-mix(in srgb, var(--shell-foreground) 12%, transparent);
   }
 

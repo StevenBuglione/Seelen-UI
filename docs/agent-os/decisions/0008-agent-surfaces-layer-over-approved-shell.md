@@ -24,19 +24,25 @@ non-color state affordances. Small transient surfaces may blur; stages remain mo
 
 Map runtime presentation to exactly six native surface kinds:
 
-1. Orb for persistent status and invocation;
+1. Orb for persistent status and invocation, rendered as a small control inside the shell top bar;
 2. Capsule for a transcript line, current step, and compact progress;
 3. Sheet for blocking decisions, approvals, and short recovery choices;
 4. Stage for artifacts and sustained review;
 5. Sidecar for requested application context;
 6. Toast for brief completion and undo.
 
-Every plan includes the Orb. Idle renders only the small Orb. Completion may add a Toast, but dismissing that transient
-surface collapses the experience back to the Orb. Raw chain of thought is not represented in state or UI.
+Every plan includes the Orb. In the approved M03 interaction revision, the Orb is a restrained top-bar button rather
+than a floating desktop element. The overlay is absent until the user clicks that button or uses the local Studio
+hotkey. Idle invocation opens a compact composer Capsule; all other runtime detail remains mapped to the five contextual
+containers. Completion may add a Toast, but dismissing that transient surface collapses the experience back to the
+dormant top-bar Orb. Raw chain of thought is not represented in state or UI.
 
-The fixture adapter owns a typed active-monitor identifier. Only that monitor receives the Agent overlay. Moving the
-fixture between monitors changes no Windows state and does not register a hook, shortcut, AppBar, service, or native
-window.
+The browser fixture uses `Ctrl+Shift+Space` as a local, page-scoped invocation test. It does not register a Windows or
+global shortcut; production shortcut ownership remains a later authorized milestone.
+
+The fixture adapter owns a typed active-monitor identifier. Only that monitor receives the Agent control and invoked
+overlay. Moving the fixture between monitors changes no Windows state and does not register a hook, shortcut, AppBar,
+service, or native window.
 
 ## Consequences
 

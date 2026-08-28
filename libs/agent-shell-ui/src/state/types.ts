@@ -23,6 +23,9 @@ export const fixtureNames = [
   "mcp-app-ready",
   "workspace-composer",
   "multi-agent-progress",
+  "sidecar-context",
+  "light-theme",
+  "dark-theme",
   "reduced-motion",
   "high-contrast",
 ] as const;
@@ -52,6 +55,14 @@ export type SurfaceKind =
   | "sidecar";
 export type StudioTheme = "light" | "dark" | "high-contrast";
 export type MotionMode = "normal" | "reduced";
+export type MonitorId = "monitor:1" | "monitor:2";
+export type PresentationIntent =
+  | "rest"
+  | "transient"
+  | "decision"
+  | "artifact"
+  | "context"
+  | "completion";
 
 export interface FixtureState {
   fixture: FixtureName;
@@ -59,11 +70,16 @@ export interface FixtureState {
   heading: string;
   message: string;
   status: string;
+  presentation: PresentationIntent;
+  composerOpen?: boolean;
   transcript?: string;
   progress?: number;
   steps?: readonly string[];
   approval?: {
     action: string;
+    target: string;
+    data: string;
+    reason: string;
     risk: "low" | "medium" | "high";
     denied?: boolean;
   };
@@ -72,6 +88,14 @@ export interface FixtureState {
     label: string;
   };
   agents?: readonly { name: string; status: string }[];
+  context?: {
+    application: string;
+    title: string;
+    details: readonly string[];
+  };
+  completion?: {
+    undoLabel?: string;
+  };
 }
 
 export interface PlannedSurface {
@@ -79,11 +103,12 @@ export interface PlannedSurface {
   kind: SurfaceKind;
   purpose: string;
   modal: boolean;
+  dismissible: boolean;
 }
 
 export interface SurfacePlan {
   revision: number;
-  activeMonitor: string;
+  activeMonitor: MonitorId;
   surfaces: readonly PlannedSurface[];
 }
 

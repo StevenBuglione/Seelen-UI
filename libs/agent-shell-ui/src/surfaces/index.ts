@@ -1,2 +1,9 @@
+export { default as ActivityCapsule } from "./ActivityCapsule.svelte";
+export { default as AgentOrb } from "./AgentOrb.svelte";
+export { default as AgentSidecar } from "./AgentSidecar.svelte";
+export { default as AgentSurfaceLayer } from "./AgentSurfaceLayer.svelte";
+export { default as AgentToast } from "./AgentToast.svelte";
+export { default as ApprovalSheet } from "./ApprovalSheet.svelte";
 export { default as FixturePreview } from "./FixturePreview.svelte";
+export { default as ResultStage } from "./ResultStage.svelte";
 export { default as ShellExperience } from "./ShellExperience.svelte";

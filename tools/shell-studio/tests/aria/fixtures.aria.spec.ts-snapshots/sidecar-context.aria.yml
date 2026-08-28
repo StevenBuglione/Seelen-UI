@@ -1,0 +1,80 @@
+- region "Agent OS sidecar-context fixture preview":
+    - region "Omarchy-compatible Agent OS shell experience":
+        - article "Shell monitor 1, active":
+            - button "Open applications"
+            - navigation "Workspaces":
+                - 'button "Workspace 1: Build"'
+                - 'button "Workspace 2: Research"'
+                - 'button "Workspace 3: Design"'
+                - 'button "Workspace 4: Media"'
+                - 'button "Workspace 5: Focus"'
+            - button "Open calendar":
+                - text: Wednesday
+                - strong: /\d+:\d+/
+            - text: /\d+°/
+            - button "Close Agent OS" [expanded]: Current context
+            - button "Open notifications"
+            - button "Open quick settings": /\d+%/
+            - button "Open workspace overview"
+            - main "Build workspace":
+                - 'article "Terminal: agent-os-shell — pwsh"':
+                    - text: ""
+                    - paragraph:
+                        - text: steve@agent-os
+                        - emphasis: codex/M03-agent-os-design-system
+                    - paragraph: › npm run studio
+                    - paragraph: /VITE ready in \d+ ms/
+                    - paragraph: "/Local: http:\\/\\/\\d+\\.\\d+\\.0\\.1:\\d+\\//"
+                    - paragraph: › git status --short
+                    - paragraph:
+                        - emphasis: M
+                        - text: tools/shell-studio/src/App.svelte
+                    - paragraph:
+                        - emphasis: "?"
+                        - text: libs/agent-shell-ui/src/themes/omarchy.ts
+                    - paragraph:
+                        - emphasis: "?"
+                        - text: docs/agent-os/upstream/omarchy.lock.json
+                    - paragraph: › npm run studio:test:interactions
+                    - paragraph: M03 browser gates green
+                    - paragraph: ────────────────────────────────────
+                    - paragraph: theme vantablack layout dwindle
+                    - paragraph:
+                        - text: source
+                        - emphasis: basecamp/omarchy@83881e9
+                    - paragraph: ›
+                - 'article "Code: ShellExperience.svelte"':
+                    - text: ShellExperience.svelte ShellExperience.svelte
+                    - list:
+                        - listitem: import TopBar from "./TopBar.svelte";
+                        - listitem: import Workspace from "./Workspace.svelte";
+                        - listitem
+                        - listitem: const shell = getTheme("vantablack");
+                        - listitem: const layout = "dwindle";
+                        - listitem
+                        - listitem: <section class="shell-experience">
+                        - listitem: <TopBar source="omarchy" />
+                        - listitem: <Workspace layout=dwindle theme=shell />
+                        - listitem: <AgentSurfaceLayer activeMonitor=plan.activeMonitor />
+                        - listitem: </section>
+                - 'article "Browser: Omarchy — GitHub"':
+                    - text: Omarchy — GitHub ‹ › ↻ github.com/basecamp/omarchy basecamp /
+                    - heading "omarchy" [level=3]
+                    - paragraph: Opinionated Arch/Hyprland setup.
+                    - text: /quattro config Shell and keybinding configuration themes \d+ declarative desktop themes manual Experience and workflow documentation shell Quickshell components and plugins/
+            - complementary "Current context":
+                - paragraph: Context lens
+                - heading "Current context" [level=2]
+                - button "Close context lens"
+                - paragraph: Context is available on demand.
+                - region "Focused application":
+                    - text: ""
+                    - strong: Visual Studio Code
+                    - text: ShellExperience.svelte
+                - list:
+                    - listitem: "Workspace: agent-os-shell"
+                    - listitem: "Language: Svelte"
+                    - listitem: "Privacy: local metadata only"
+                - text: Local context only
+                - button "Show actions"
+            - text: Studio simulation · no native shell connection

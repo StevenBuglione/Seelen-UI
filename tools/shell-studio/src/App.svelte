@@ -3,6 +3,7 @@
     FixturePreview,
     FixtureShellAdapter,
     ShellExperience,
+    AGENT_OS_TOKEN_VERSION,
     fixtureNames,
     isFixtureName,
     isOmarchyThemeId,
@@ -11,6 +12,7 @@
     type FixtureName,
     type InjectionKind,
     type MotionMode,
+    type MonitorId,
     type OmarchyThemeId,
     type ShellLayout,
     type ShellPanel,
@@ -58,7 +60,7 @@
   ];
 
   const parameters = new URLSearchParams(window.location.search);
-  const initialMode: StudioMode = parameters.get("mode") === "fixtures" ? "fixtures" : "shell";
+  const initialMode: StudioMode = parameters.get("mode") === "shell" ? "shell" : "fixtures";
   const requestedFixture = parameters.get("fixture") ?? "idle";
   const initialFixture: FixtureName = isFixtureName(requestedFixture) ? requestedFixture : "idle";
   const requestedTheme = parameters.get("theme");
@@ -76,7 +78,13 @@
   const adapter = new FixtureShellAdapter(initialFixture);
   let mode = $state<StudioMode>(initialMode);
   let fixture = $state<FixtureName>(initialFixture);
-  let theme = $state<StudioTheme>(initialFixture === "high-contrast" ? "high-contrast" : initialTheme);
+  let theme = $state<StudioTheme>(
+    initialFixture === "high-contrast"
+      ? "high-contrast"
+      : initialFixture === "light-theme"
+      ? "light"
+      : initialTheme,
+  );
   let shellTheme = $state<OmarchyThemeId>(initialShellTheme);
   let shellPanel = $state<ShellPanel>(initialPanel);
   let shellLayout = $state<ShellLayout>(initialLayout);
@@ -101,6 +109,8 @@
     if (!isFixtureName(next)) return;
     fixture = next;
     if (next === "high-contrast") theme = "high-contrast";
+    if (next === "light-theme") theme = "light";
+    if (next === "dark-theme") theme = "dark";
     if (next === "reduced-motion") motion = "reduced";
     snapshot = adapter.loadFixture(next);
   }
@@ -113,6 +123,18 @@
   function inject(kind: InjectionKind): void {
     snapshot = adapter.inject({ kind });
     fixture = snapshot.state.fixture;
+  }
+
+  function chooseMonitorCount(event: Event): void {
+    monitorCount = Number((event.currentTarget as HTMLSelectElement).value) as 1 | 2;
+    if (monitorCount === 1 && snapshot.plan.activeMonitor === "monitor:2") {
+      snapshot = adapter.setActiveMonitor("monitor:1");
+    }
+  }
+
+  function chooseActiveMonitor(event: Event): void {
+    const next = (event.currentTarget as HTMLSelectElement).value as MonitorId;
+    snapshot = adapter.setActiveMonitor(next);
   }
 
   function replayTrace(): void {
@@ -143,11 +165,11 @@
     <aside class="control-panel" aria-label="Studio controls">
       <section aria-labelledby="experience-controls">
         <h2 id="experience-controls">Experience</h2>
-        <label>Preview<select aria-label="Preview" value={mode} onchange={chooseMode}><option value="shell">Omarchy shell baseline</option><option value="fixtures">Agent fixtures · deferred</option></select></label>
+        <label>Preview<select aria-label="Preview" value={mode} onchange={chooseMode}><option value="fixtures">Agent OS surfaces</option><option value="shell">Omarchy shell baseline</option></select></label>
         <label>Viewport<select aria-label="Viewport" bind:value={viewport}>{#each Object.keys(viewportPresets) as name}<option value={name}>{name}</option>{/each}</select></label>
         <label>CSS scale / DPI<select aria-label="CSS scale / DPI" bind:value={dpi}>{#each Object.keys(dpiPresets) as name}<option value={name}>{name}</option>{/each}</select></label>
         <label>Motion<select aria-label="Motion" bind:value={motion}><option value="normal">normal</option><option value="reduced">reduced</option></select></label>
-        <label>Monitor canvas<select aria-label="Monitor canvas" bind:value={monitorCount}><option value={1}>one monitor</option><option value={2}>two monitors</option></select></label>
+        <label>Monitor canvas<select aria-label="Monitor canvas" value={monitorCount} onchange={chooseMonitorCount}><option value={1}>one monitor</option><option value={2}>two monitors</option></select></label>
       </section>
 
       {#if mode === "shell"}
@@ -165,9 +187,10 @@
         </section>
       {:else}
         <section aria-labelledby="scenario-controls">
-          <h2 id="scenario-controls">Deferred agent fixtures</h2>
+          <h2 id="scenario-controls">Agent surface contract</h2>
           <label>Fixture<select aria-label="Fixture" value={fixture} onchange={chooseFixture}>{#each fixtureNames as name}<option value={name}>{name}</option>{/each}</select></label>
-          <label>Fixture theme<select aria-label="Theme" bind:value={theme}><option value="light">light</option><option value="dark">dark</option><option value="high-contrast">high-contrast</option></select></label>
+          <label>Agent theme<select aria-label="Theme" bind:value={theme}><option value="light">light</option><option value="dark">dark</option><option value="high-contrast">high-contrast</option></select></label>
+          <label>Active monitor<select aria-label="Active monitor" value={snapshot.plan.activeMonitor} onchange={chooseActiveMonitor} disabled={monitorCount === 1}><option value="monitor:1">monitor 1</option><option value="monitor:2">monitor 2</option></select></label>
         </section>
         <section aria-labelledby="injection-controls"><h2 id="injection-controls">Inject event</h2><div class="button-grid">{#each injections as injection}<button type="button" onclick={() => inject(injection.kind)}>{injection.label}</button>{/each}</div></section>
         <section aria-labelledby="replay-controls"><h2 id="replay-controls">Trace replay</h2><p>{replayStatus}</p><button type="button" onclick={replayTrace}>Replay thinking-to-result.aostrace</button></section>
@@ -176,7 +199,7 @@
 
     <section class="workbench" aria-labelledby="preview-heading">
       <header class="workbench-heading">
-        <div><p>{mode === "shell" ? "Shell-first visual baseline" : `Fixture ${fixtureNames.indexOf(fixture) + 1} of ${fixtureNames.length}`}</p><h2 id="preview-heading">{mode === "shell" ? `${currentShellTheme.label} · ${shellPanel === "none" ? "Desktop" : shellPanels.find((entry) => entry.value === shellPanel)?.label}` : snapshot.state.heading}</h2></div>
+        <div><p>{mode === "shell" ? "Approved shell baseline" : `M03 surface fixture ${fixtureNames.indexOf(fixture) + 1} of ${fixtureNames.length}`}</p><h2 id="preview-heading">{mode === "shell" ? `${currentShellTheme.label} · ${shellPanel === "none" ? "Desktop" : shellPanels.find((entry) => entry.value === shellPanel)?.label}` : snapshot.state.heading}</h2></div>
         <dl><div><dt>Viewport</dt><dd>{viewport}</dd></div><div><dt>DPI</dt><dd>{dpi}</dd></div><div><dt>Mode</dt><dd>{mode}</dd></div>{#if mode === "fixtures"}<div><dt>Clock</dt><dd data-testid="clock-value">{snapshot.clockMs}</dd></div>{/if}</dl>
       </header>
 
@@ -198,7 +221,7 @@
         {:else}
           <details open><summary>AgentRuntimeState</summary><pre data-testid="runtime-state">{JSON.stringify(snapshot.state, null, 2)}</pre></details>
           <details open><summary>SurfacePlan</summary><pre data-testid="surface-plan">{JSON.stringify(snapshot.plan, null, 2)}</pre></details>
-          <details><summary>Determinism</summary><pre>{JSON.stringify({ clockMs: snapshot.clockMs, deterministicId: snapshot.deterministicId, randomValue: snapshot.randomValue, networkLatencyMs: snapshot.networkLatencyMs }, null, 2)}</pre></details>
+          <details><summary>DesignSystemContract</summary><pre>{JSON.stringify({ tokenVersion: AGENT_OS_TOKEN_VERSION, surfaces: ["orb", "capsule", "sheet", "stage", "toast", "sidecar"], dashboard: false, reasoningSurface: false }, null, 2)}</pre></details>
         {/if}
       </div>
     </section>

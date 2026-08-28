@@ -35,6 +35,12 @@ visual/ARIA comparison. Its preview renderer is deliberately a fixture surrogate
 native surface entrypoints remain owned by M03. The user approved the corrected initial snapshot baselines on
 2026-08-27, completing M02 and authorizing the serial transition to M03.
 
+M03 adds the versioned Agent OS token contract, accessibility primitives, deterministic presentation mapping, and the
+six sanctioned surface containers to the shared package. The approved Omarchy shell remains the visual underlay. Its
+only persistent Agent affordance is a small top-bar Orb control; the contextual overlay is not mounted until explicit
+local invocation. The Studio-only `Ctrl+Shift+Space` handler is page scoped and does not register a Windows shortcut.
+All M03 work remains browser-only pending human review of the candidate visual and ARIA baselines.
+
 M01 changes bootstrap selection but preserves Production as the default and does not redesign any production shell
 surface, protocol, runtime crate, Windows hook, or service behavior.
 
@@ -45,7 +51,8 @@ Shell Studio (Vite, browser only)
 @agent-os/shell-ui ports + deterministic fixtures
           |
           +-- FixtureShellAdapter (M02)
-          +-- native thin adapters (M03+; not yet implemented)
+          +-- design system + six presentation surfaces (M03)
+          +-- native thin adapters (later milestone; not implemented)
 ```
 
 ## Repository ownership

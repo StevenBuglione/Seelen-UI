@@ -1,6 +1,14 @@
 import { DeterministicSource, FakeClock, FIXTURE_NETWORK_LATENCY_MS } from "../state/determinism.ts";
+import { moveSurfacePlan } from "../presentation/runtime-presentation.ts";
 import { createFixtureScenario, isFixtureName } from "../state/fixtures.ts";
-import type { FixtureName, FixtureSnapshot, InjectionKind, StudioInjection, TraceEnvelope } from "../state/types.ts";
+import type {
+  FixtureName,
+  FixtureSnapshot,
+  InjectionKind,
+  MonitorId,
+  StudioInjection,
+  TraceEnvelope,
+} from "../state/types.ts";
 
 export interface ShellAdapter {
   snapshot(): FixtureSnapshot;
@@ -8,6 +16,7 @@ export interface ShellAdapter {
   inject(event: StudioInjection): FixtureSnapshot;
   replay(envelopes: readonly TraceEnvelope[]): FixtureSnapshot;
   advanceClock(durationMs: number): FixtureSnapshot;
+  setActiveMonitor(activeMonitor: MonitorId): FixtureSnapshot;
 }
 
 const fixtureForInjection: Record<InjectionKind, FixtureName> = {
@@ -29,6 +38,7 @@ export class FixtureShellAdapter implements ShellAdapter {
   readonly #source = new DeterministicSource();
   #snapshot: FixtureSnapshot;
   #traceMonotonicMs = 0;
+  #activeMonitor: MonitorId = "monitor:1";
 
   constructor(initialFixture: FixtureName = "idle") {
     this.#snapshot = this.#makeSnapshot(initialFixture);
@@ -75,8 +85,17 @@ export class FixtureShellAdapter implements ShellAdapter {
     return this.snapshot();
   }
 
+  setActiveMonitor(activeMonitor: MonitorId): FixtureSnapshot {
+    this.#activeMonitor = activeMonitor;
+    this.#snapshot = {
+      ...this.#snapshot,
+      plan: moveSurfacePlan(this.#snapshot.plan, activeMonitor),
+    };
+    return this.snapshot();
+  }
+
   #makeSnapshot(name: FixtureName): FixtureSnapshot {
-    const scenario = createFixtureScenario(name);
+    const scenario = createFixtureScenario(name, this.#activeMonitor);
     return {
       ...scenario,
       clockMs: this.#clock.now(),

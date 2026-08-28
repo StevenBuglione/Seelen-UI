@@ -1,5 +1,5 @@
 - region "Omarchy-compatible Agent OS shell experience":
-    - article "Shell monitor 1":
+    - article "Shell monitor 1, active":
         - button "Open applications"
         - navigation "Workspaces":
             - 'button "Workspace 1: Build"'
@@ -19,7 +19,7 @@
                 - text: ""
                 - paragraph:
                     - text: steve@agent-os
-                    - emphasis: codex/M02-shared-ui-shell-studio
+                    - emphasis: codex/M03-agent-os-design-system
                 - paragraph: › npm run studio
                 - paragraph: /VITE ready in \d+ ms/
                 - paragraph: "/Local: http:\\/\\/\\d+\\.\\d+\\.0\\.1:\\d+\\//"
@@ -34,7 +34,7 @@
                     - emphasis: "?"
                     - text: docs/agent-os/upstream/omarchy.lock.json
                 - paragraph: › npm run studio:test:interactions
-                - paragraph: /8 passed · 0 failed · [\d,.]+[hmsp]+/
+                - paragraph: M03 browser gates green
                 - paragraph: ────────────────────────────────────
                 - paragraph: theme vantablack layout dwindle
                 - paragraph:
@@ -53,7 +53,7 @@
                     - listitem: <section class="shell-experience">
                     - listitem: <TopBar source="omarchy" />
                     - listitem: <Workspace layout=dwindle theme=shell />
-                    - listitem: <ContextPanels mode="deferred" />
+                    - listitem: <AgentSurfaceLayer activeMonitor=plan.activeMonitor />
                     - listitem: </section>
             - 'article "Browser: Omarchy — GitHub"':
                 - text: Omarchy — GitHub ‹ › ↻ github.com/basecamp/omarchy basecamp /

@@ -42,3 +42,8 @@ M02 adds a separate browser-only boundary:
 
 The Studio is a preview/test process, not a trust boundary for untrusted external content. M02 adds no network client,
 file mutation port, shell command, updater, installer, or production process connection.
+
+M03 preserves that boundary. Its tokens, focus trap, components, presentation mapper, top-bar Orb, and contextual
+surfaces live entirely in the shared browser package. The preview's `Ctrl+Shift+Space` invocation is an ordinary page
+keyboard listener that operates only while the Studio page has focus. M03 registers no global shortcut, keyboard hook,
+native widget, Tauri command, named-pipe client, service, AppBar, autostart entry, installer, or production shell path.

@@ -5,7 +5,9 @@ import { openFixture } from "../helpers.ts";
 
 for (const fixture of fixtureNames) {
   test(`${fixture} fixture visual @snapshot`, async ({ page }) => {
-    await openFixture(page, fixture);
+    await openFixture(page, fixture, {
+      invoke: fixture !== "idle" && fixture !== "hovered",
+    });
     await expect(page.locator('[data-testid="viewport-frame"]'))
       .toHaveScreenshot(`${fixture}.png`);
   });

@@ -7,11 +7,13 @@ import { FixtureShellAdapter } from "../src/ports/shell-adapter.ts";
 import { parseAosTrace } from "../src/replay/aostrace.ts";
 import { DeterministicSource, FakeClock } from "../src/state/determinism.ts";
 import { createFixtureScenario, fixtureCatalog } from "../src/state/fixtures.ts";
+import { AGENT_OS_TOKEN_VERSION, agentSurfaceKinds } from "../src/design-system/tokens.ts";
+import { detailSurfaceForIntent } from "../src/presentation/runtime-presentation.ts";
 import { fixtureNames } from "../src/state/types.ts";
 import { getOmarchyTheme, omarchyThemeIds, omarchyThemes, omarchyThemeStyle } from "../src/themes/omarchy.ts";
 
-test("every required M02 fixture has a deterministic state and surface plan", () => {
-  assert.equal(fixtureCatalog.length, 26);
+test("every required M03 fixture has a deterministic sanctioned surface plan", () => {
+  assert.equal(fixtureCatalog.length, 29);
   assert.deepEqual(
     fixtureCatalog.map((scenario) => scenario.state.fixture),
     fixtureNames,
@@ -22,7 +24,18 @@ test("every required M02 fixture has a deterministic state and surface plan", ()
     assert.ok(scenario.state.heading.length > 0);
     assert.ok(scenario.plan.surfaces.length > 0);
     assert.equal(scenario.plan.surfaces[0]?.kind, "orb");
+    assert.ok(scenario.plan.surfaces.length <= 2);
+    assert.equal(
+      scenario.plan.surfaces[1]?.kind,
+      detailSurfaceForIntent(scenario.state.presentation),
+    );
   }
+  assert.deepEqual(
+    [...new Set(fixtureCatalog.flatMap((scenario) => scenario.plan.surfaces.map((surface) => surface.kind)))].sort(),
+    [...agentSurfaceKinds].sort(),
+  );
+  assert.deepEqual(createFixtureScenario("idle").plan.surfaces.map((surface) => surface.kind), ["orb"]);
+  assert.equal(AGENT_OS_TOKEN_VERSION, "1.0.0");
 });
 
 test("clock, identifiers, random values, and latency are deterministic", () => {
@@ -59,6 +72,10 @@ test("fixture adapter injects events and replays ordered aostrace envelopes", ()
   assert.equal(after.state.fixture, "result-summary");
   assert.equal(after.clockMs, before + 900);
   assert.throws(() => parseAosTrace('{"seq":1}'), /incomplete/u);
+
+  const moved = adapter.setActiveMonitor("monitor:2");
+  assert.equal(moved.plan.activeMonitor, "monitor:2");
+  assert.equal(adapter.loadFixture("thinking").plan.activeMonitor, "monitor:2");
 });
 
 test("browser-only source trees contain no native bridge entry points", () => {

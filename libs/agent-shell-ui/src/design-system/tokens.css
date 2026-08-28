@@ -1,0 +1,81 @@
+.aos-design-system {
+  --aos-token-version: "1.0.0";
+  --aos-space-1: 0.3077em;
+  --aos-space-2: 0.6154em;
+  --aos-space-3: 0.9231em;
+  --aos-space-4: 1.2308em;
+  --aos-space-6: 1.8462em;
+  --aos-space-8: 2.4615em;
+  --aos-radius-2: 0.6154em;
+  --aos-radius-3: 0.9231em;
+  --aos-radius-4: 1.2308em;
+  --aos-font-caption: 0.7692em;
+  --aos-font-body: 0.9231em;
+  --aos-font-emphasis: 1em;
+  --aos-font-title: 1.2308em;
+  --aos-font-display: 1.5385em;
+  --aos-duration-press: 110ms;
+  --aos-duration-expand: 190ms;
+  --aos-duration-appear: 210ms;
+  --aos-duration-dismiss: 150ms;
+  --aos-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --aos-bg: color-mix(in srgb, var(--shell-background) 88%, #1b1b1d);
+  --aos-bg-raised: color-mix(in srgb, var(--shell-background) 80%, #242426);
+  --aos-bg-solid: color-mix(in srgb, var(--shell-background) 86%, #161618);
+  --aos-bg-muted: color-mix(in srgb, var(--shell-lighter-background) 88%, var(--shell-background));
+  --aos-text: var(--shell-foreground);
+  --aos-text-muted: var(--shell-dark-foreground);
+  --aos-accent: var(--shell-accent);
+  --aos-keyline: color-mix(in srgb, var(--shell-foreground) 18%, transparent);
+  --aos-keyline-strong: color-mix(in srgb, var(--shell-foreground) 34%, transparent);
+  --aos-focus: color-mix(in srgb, var(--shell-foreground) 86%, transparent);
+  --aos-danger: color-mix(in srgb, #e25d62 68%, var(--shell-foreground));
+  --aos-shadow-small: 0 0.9231em 2.7692em rgba(0, 0, 0, 0.42), inset 0 1px 0 color-mix(in srgb, var(--shell-foreground) 6%, transparent);
+  --aos-shadow-large: 0 2.4615em 7.3846em rgba(0, 0, 0, 0.66), inset 0 1px 0 color-mix(in srgb, var(--shell-foreground) 7%, transparent);
+  color: var(--aos-text);
+  color-scheme: dark;
+  font-family: "Segoe UI Variable", "Segoe UI", sans-serif;
+  font-size: calc(13px * var(--aos-dpi, 1));
+  line-height: 1.35;
+}
+
+.aos-design-system[data-aos-theme="light"] {
+  --aos-bg: color-mix(in srgb, var(--shell-background) 94%, #fff);
+  --aos-bg-raised: color-mix(in srgb, var(--shell-background) 84%, #fff);
+  --aos-bg-solid: color-mix(in srgb, var(--shell-background) 91%, #fff);
+  --aos-bg-muted: color-mix(in srgb, var(--shell-lighter-background) 72%, #fff);
+  --aos-shadow-small: 0 0.9231em 2.7692em rgba(43, 45, 55, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  --aos-shadow-large: 0 2.4615em 7.3846em rgba(43, 45, 55, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  color-scheme: light;
+}
+
+.aos-design-system[data-aos-theme="high-contrast"] {
+  --aos-bg: #000;
+  --aos-bg-raised: #000;
+  --aos-bg-solid: #000;
+  --aos-bg-muted: #111;
+  --aos-text: #fff;
+  --aos-text-muted: #fff;
+  --aos-accent: #ff0;
+  --aos-keyline: #fff;
+  --aos-keyline-strong: #fff;
+  --aos-focus: #0ff;
+  --aos-danger: #ff9a9a;
+  --aos-shadow-small: none;
+  --aos-shadow-large: none;
+  color-scheme: dark;
+}
+
+.aos-design-system[data-aos-motion="reduced"] {
+  --aos-duration-expand: 1ms;
+  --aos-duration-appear: 1ms;
+  --aos-duration-dismiss: 1ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aos-design-system {
+    --aos-duration-expand: 1ms;
+    --aos-duration-appear: 1ms;
+    --aos-duration-dismiss: 1ms;
+  }
+}
