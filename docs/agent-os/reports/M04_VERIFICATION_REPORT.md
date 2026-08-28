@@ -7,7 +7,7 @@
 - Runtime base: `7f10841`
 - Protocol: `1.0`
 - Generated semantic contract SHA-256: `10d97640967b62ed78f88d264b4b41f2a9bbf093f36b19d58a3392b0c2457304`
-- Status: **AUTOMATED PASS; HUMAN VISUAL/ARIA REVIEW PENDING**
+- Status: **COMPLETE; AUTOMATED EVIDENCE PASSED; OWNER WAIVED SEPARATE VISUAL/ARIA REVIEW**
 
 ## Delivered shell slice
 
@@ -22,12 +22,12 @@ to the runtime pipe.
 
 ## Acceptance evidence
 
-| Criterion                                 | Result                                                                 |
-| ----------------------------------------- | ---------------------------------------------------------------------- |
-| Shell and host connect/reconnect          | PASS in the sibling runtime's real Windows named-pipe integration test |
-| Protocol incompatibility visible and safe | Automated PASS; human visual/ARIA review pending                       |
-| Replay drives real shell surfaces         | Automated PASS; human visual/ARIA review pending                       |
-| No Codex dependency                       | PASS in both repositories                                              |
+| Criterion                                 | Result                                                                               |
+| ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| Shell and host connect/reconnect          | PASS in the sibling runtime's real Windows named-pipe integration test               |
+| Protocol incompatibility visible and safe | PASS; automated comparison and agent inspection passed; separate owner review waived |
+| Replay drives real shell surfaces         | PASS; automated comparison and agent inspection passed; separate owner review waived |
+| No Codex dependency                       | PASS in both repositories                                                            |
 
 The shell candidate passes generated-contract drift, TypeScript/unit validation, Studio build, runtime-replay
 interactions, compare-only Playwright visual/ARIA tests, source-policy checks, Deno formatting/linting, and repository
@@ -44,12 +44,14 @@ then the focused regression and complete suite passed.
 - `tools/shell-studio/tests/aria/runtime-replay.aria.spec.ts-snapshots/m04-protocol-incompatible.aria.yml`
 
 Agent visual inspection found both candidates contained, aligned, readable, consistent with the approved Vantablack
-surface system, and free of clipping/bleed. The ARIA trees expose meaningful named status/region structure. Human review
-is still mandatory under the repository snapshot policy.
+surface system, and free of clipping/bleed. The ARIA trees expose meaningful named status/region structure. On
+2026-08-28 the repository owner explicitly directed Codex to complete the active goal without a separate human review;
+this report records that waiver without representing it as an independent visual inspection.
 
 ## Safety
 
 No production Seelen/Tauri path, widget entrypoint, named-pipe bridge, global shortcut, hook, taskbar behavior, service,
 AppBar, updater, installer, autostart, or developer-shell configuration was added or exercised.
 
-M04 remains incomplete until the user approves the candidate visual and ARIA baselines. M05 has not begun.
+M04 is complete. The candidate visual and ARIA baselines retain their automated evidence and agent inspection; the
+separate owner review was explicitly waived before M05 began.
