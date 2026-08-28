@@ -19,9 +19,17 @@
     type ShellWorkspaceId,
     type StudioTheme,
   } from "@agent-os/shell-ui";
+  import {
+    AGENT_CONTRACTS_SHA256,
+    AGENT_PROTOCOL_VERSION,
+    replayRuntimeTrace,
+  } from "@agent-os/runtime-client";
   import traceText from "./replay/thinking-to-result.aostrace.jsonl?raw";
+  import m04RuntimeTraceText from "./replay/m04-thinking-to-result.runtime-events.jsonl?raw";
+  import m04IncompatibleTraceText from "./replay/m04-protocol-incompatible.runtime-events.jsonl?raw";
 
   type StudioMode = "shell" | "fixtures";
+  type RuntimeTraceName = "thinking-to-result" | "protocol-incompatible";
 
   const viewportPresets = {
     "1366×768": { width: 1366, height: 768 },
@@ -74,10 +82,17 @@
   const requestedWorkspace = Number(parameters.get("workspace") ?? 1);
   const initialWorkspace: ShellWorkspaceId = requestedWorkspace >= 1 && requestedWorkspace <= 5 ? requestedWorkspace as ShellWorkspaceId : 1;
   const initialMotion: MotionMode = parameters.get("motion") === "reduced" ? "reduced" : "normal";
+  const requestedRuntimeTrace = parameters.get("runtimeTrace");
+  const initialRuntimeTrace: RuntimeTraceName | null = requestedRuntimeTrace === "thinking-to-result" || requestedRuntimeTrace === "protocol-incompatible"
+    ? requestedRuntimeTrace
+    : null;
+  const initialRuntimeReplay = initialRuntimeTrace
+    ? replayRuntimeTrace(initialRuntimeTrace === "thinking-to-result" ? m04RuntimeTraceText : m04IncompatibleTraceText)
+    : null;
 
   const adapter = new FixtureShellAdapter(initialFixture);
   let mode = $state<StudioMode>(initialMode);
-  let fixture = $state<FixtureName>(initialFixture);
+  let fixture = $state<FixtureName>(initialRuntimeReplay?.finalSnapshot.state.fixture ?? initialFixture);
   let theme = $state<StudioTheme>(
     initialFixture === "high-contrast"
       ? "high-contrast"
@@ -93,8 +108,11 @@
   let viewport = $state<ViewportName>("1366×768");
   let dpi = $state<DpiName>("100%");
   let monitorCount = $state<1 | 2>(1);
-  let snapshot = $state(adapter.snapshot());
-  let replayStatus = $state("Trace ready");
+  let snapshot = $state(initialRuntimeReplay?.finalSnapshot ?? adapter.snapshot());
+  let runtimeTrace = $state<RuntimeTraceName | null>(initialRuntimeTrace);
+  let replayStatus = $state(initialRuntimeReplay
+    ? `Replayed ${initialRuntimeReplay.frames.length} typed runtime snapshots`
+    : "Trace ready");
 
   const viewportSize = $derived(viewportPresets[viewport]);
   const aspectRatio = $derived(`${viewportSize.width} / ${viewportSize.height}`);
@@ -113,6 +131,7 @@
     if (next === "dark-theme") theme = "dark";
     if (next === "reduced-motion") motion = "reduced";
     snapshot = adapter.loadFixture(next);
+    runtimeTrace = null;
   }
 
   function chooseShellTheme(event: Event): void {
@@ -123,6 +142,7 @@
   function inject(kind: InjectionKind): void {
     snapshot = adapter.inject({ kind });
     fixture = snapshot.state.fixture;
+    runtimeTrace = null;
   }
 
   function chooseMonitorCount(event: Event): void {
@@ -142,6 +162,15 @@
     snapshot = adapter.replay(envelopes);
     fixture = snapshot.state.fixture;
     replayStatus = `Replayed ${envelopes.length} events through sequence ${envelopes.at(-1)?.seq ?? 0}`;
+    runtimeTrace = null;
+  }
+
+  function replayM04Trace(name: RuntimeTraceName): void {
+    const replay = replayRuntimeTrace(name === "thinking-to-result" ? m04RuntimeTraceText : m04IncompatibleTraceText);
+    snapshot = replay.finalSnapshot;
+    fixture = snapshot.state.fixture;
+    runtimeTrace = name;
+    replayStatus = `Replayed ${replay.frames.length} typed runtime snapshots through sequence ${replay.frames.at(-1)?.envelope.seq ?? 0}`;
   }
 </script>
 
@@ -193,13 +222,13 @@
           <label>Active monitor<select aria-label="Active monitor" value={snapshot.plan.activeMonitor} onchange={chooseActiveMonitor} disabled={monitorCount === 1}><option value="monitor:1">monitor 1</option><option value="monitor:2">monitor 2</option></select></label>
         </section>
         <section aria-labelledby="injection-controls"><h2 id="injection-controls">Inject event</h2><div class="button-grid">{#each injections as injection}<button type="button" onclick={() => inject(injection.kind)}>{injection.label}</button>{/each}</div></section>
-        <section aria-labelledby="replay-controls"><h2 id="replay-controls">Trace replay</h2><p>{replayStatus}</p><button type="button" onclick={replayTrace}>Replay thinking-to-result.aostrace</button></section>
+        <section aria-labelledby="replay-controls"><h2 id="replay-controls">Trace replay</h2><p>{replayStatus}</p><button type="button" onclick={() => replayM04Trace("thinking-to-result")}>Replay M04 runtime trace</button><button type="button" onclick={() => replayM04Trace("protocol-incompatible")}>Show incompatible protocol</button><button type="button" onclick={replayTrace}>Replay thinking-to-result.aostrace</button></section>
       {/if}
     </aside>
 
     <section class="workbench" aria-labelledby="preview-heading">
       <header class="workbench-heading">
-        <div><p>{mode === "shell" ? "Approved shell baseline" : `M03 surface fixture ${fixtureNames.indexOf(fixture) + 1} of ${fixtureNames.length}`}</p><h2 id="preview-heading">{mode === "shell" ? `${currentShellTheme.label} · ${shellPanel === "none" ? "Desktop" : shellPanels.find((entry) => entry.value === shellPanel)?.label}` : snapshot.state.heading}</h2></div>
+        <div><p>{mode === "shell" ? "Approved shell baseline" : runtimeTrace ? `M04 typed runtime replay · ${runtimeTrace}` : `M03 surface fixture ${fixtureNames.indexOf(fixture) + 1} of ${fixtureNames.length}`}</p><h2 id="preview-heading">{mode === "shell" ? `${currentShellTheme.label} · ${shellPanel === "none" ? "Desktop" : shellPanels.find((entry) => entry.value === shellPanel)?.label}` : snapshot.state.heading}</h2></div>
         <dl><div><dt>Viewport</dt><dd>{viewport}</dd></div><div><dt>DPI</dt><dd>{dpi}</dd></div><div><dt>Mode</dt><dd>{mode}</dd></div>{#if mode === "fixtures"}<div><dt>Clock</dt><dd data-testid="clock-value">{snapshot.clockMs}</dd></div>{/if}</dl>
       </header>
 
@@ -221,6 +250,7 @@
         {:else}
           <details open><summary>AgentRuntimeState</summary><pre data-testid="runtime-state">{JSON.stringify(snapshot.state, null, 2)}</pre></details>
           <details open><summary>SurfacePlan</summary><pre data-testid="surface-plan">{JSON.stringify(snapshot.plan, null, 2)}</pre></details>
+          <details open><summary>RuntimeProtocolContract</summary><pre data-testid="runtime-protocol">{JSON.stringify({ version: AGENT_PROTOCOL_VERSION, contractSha256: AGENT_CONTRACTS_SHA256, replay: runtimeTrace ?? "fixture-only" }, null, 2)}</pre></details>
           <details><summary>DesignSystemContract</summary><pre>{JSON.stringify({ tokenVersion: AGENT_OS_TOKEN_VERSION, surfaces: ["orb", "capsule", "sheet", "stage", "toast", "sidecar"], dashboard: false, reasoningSurface: false }, null, 2)}</pre></details>
         {/if}
       </div>

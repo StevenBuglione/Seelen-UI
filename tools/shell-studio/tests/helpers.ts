@@ -48,3 +48,20 @@ export async function openShell(
     options.panel ?? "none",
   );
 }
+
+export async function openRuntimeTrace(
+  page: Page,
+  trace: "thinking-to-result" | "protocol-incompatible",
+  options: { invoke?: boolean } = {},
+): Promise<void> {
+  await page.goto(`/?mode=fixtures&runtimeTrace=${trace}`);
+  await expect(page.locator('[data-studio-ready="true"]')).toBeVisible();
+  await expect(page.locator('[data-testid="runtime-protocol"]'))
+    .toContainText(`"replay": "${trace}"`);
+  if (options.invoke ?? true) {
+    await page.getByRole("button", { name: "Open Agent OS", exact: true })
+      .click();
+    await expect(page.locator('[data-testid="preview-canvas"]'))
+      .toHaveAttribute("data-agent-open", "true");
+  }
+}

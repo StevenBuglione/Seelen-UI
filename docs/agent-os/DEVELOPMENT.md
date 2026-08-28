@@ -31,6 +31,24 @@ just studio-test
 just studio-update-snapshots # explicit candidate generation; requires human review
 ```
 
+## M04 contract and replay commands
+
+```powershell
+npm run test:unit
+npm run studio:build
+npm run studio:test
+```
+
+The Rust generator lives in the sibling runtime repository. From that repository, the coordinated drift check is:
+
+```powershell
+cargo run --locked --quiet -p agent-contracts --bin generate-shell-types -- --check generated/shell-types/agent-contracts.ts ../agent-os-shell/libs/agent-runtime-client/src/generated/agent-contracts.ts
+```
+
+`libs/agent-runtime-client` is browser-safe. It consumes committed `.aostrace` JSONL and returns the same
+`FixtureSnapshot` contract used by the approved surfaces. It does not connect to a named pipe or invoke Tauri. The
+trusted native shell-backend bridge remains a later integration milestone.
+
 Snapshot comparison runs on the pinned Windows CI image. No normal command updates baselines: the update flag exists
 only behind `studio-update-snapshots`, which is absent from `check`, CI, and every other recipe.
 

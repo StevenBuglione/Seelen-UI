@@ -81,6 +81,7 @@ test("fixture adapter injects events and replays ordered aostrace envelopes", ()
 test("browser-only source trees contain no native bridge entry points", () => {
   const roots = [
     join("libs", "agent-shell-ui", "src"),
+    join("libs", "agent-runtime-client", "src"),
     join("tools", "shell-studio", "src"),
   ];
   const forbidden = [

@@ -52,3 +52,16 @@ service behavior, updater/installer path, or Agent OS production design system.
 M03 changes only the browser Studio and shared preview package. It does not add a native widget entrypoint, Tauri
 command, runtime transport, global shortcut, Windows hook, service behavior, AppBar, updater/installer path, or
 production shell change.
+
+## M04
+
+| Area                      | Paths                                          | Reason                                                                                | Production behavior changed? |
+| ------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------- |
+| Generated protocol mirror | `libs/agent-runtime-client/src/generated/**`   | Commit the deterministic TypeScript output of runtime `agent-contracts` protocol 1.0  | No                           |
+| Runtime replay adapter    | `libs/agent-runtime-client/src/**`, `tests/**` | Validate runtime snapshots and translate them into the approved real surface contract | No                           |
+| Browser replay evidence   | `tools/shell-studio/src/replay/**`, `tests/**` | Exercise normal and incompatible runtime traces with visual and ARIA candidates       | No                           |
+| Project records           | `docs/agent-os/**`, `UPSTREAM_PATCHES.md`      | Record the M04 ownership, trust boundary, decision, evidence, and review gate         | No                           |
+
+M04 changes only the browser Studio and generated/shared TypeScript package in the shell repository. The authenticated
+named-pipe implementation is confined to the separate runtime repository. M04 adds no production Seelen command, widget
+entrypoint, global shortcut, hook, taskbar behavior, service, AppBar, updater, installer, or autostart path.

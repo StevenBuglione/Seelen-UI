@@ -42,6 +42,13 @@ local invocation. The Studio-only `Ctrl+Shift+Space` handler is page scoped and 
 All M03 work remains browser-only. The user approved its final visual and ARIA baseline candidate on 2026-08-28,
 completing M03 and authorizing the serial transition to M04.
 
+M04 establishes protocol 1.0 in the separate runtime repository and mirrors its deterministically generated TypeScript
+contract into `libs/agent-runtime-client`. The browser-safe replay adapter performs runtime shape, safe-integer,
+sequence, surface allowlist, and fail-closed compatibility validation before translating an authoritative runtime
+snapshot into the existing `FixtureSnapshot` consumed by `FixturePreview` and `AgentSurfaceLayer`. The normal committed
+trace ends on the real completion toast; the incompatible-major trace ends on the real sustained error stage and states
+that Windows remains unchanged. No webview opens the named pipe and no native Seelen path is added in M04.
+
 M01 changes bootstrap selection but preserves Production as the default and does not redesign any production shell
 surface, protocol, runtime crate, Windows hook, or service behavior.
 
@@ -53,6 +60,7 @@ Shell Studio (Vite, browser only)
           |
           +-- FixtureShellAdapter (M02)
           +-- design system + six presentation surfaces (M03)
+          +-- generated runtime contract + validated trace replay (M04)
           +-- native thin adapters (later milestone; not implemented)
 ```
 

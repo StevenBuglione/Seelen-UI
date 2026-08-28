@@ -10,6 +10,9 @@ export default defineConfig({
       "@agent-os/shell-ui": fileURLToPath(
         new URL("../../libs/agent-shell-ui/src/index.ts", import.meta.url),
       ),
+      "@agent-os/runtime-client": fileURLToPath(
+        new URL("../../libs/agent-runtime-client/src/index.ts", import.meta.url),
+      ),
     },
   },
   server: {

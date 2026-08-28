@@ -47,3 +47,11 @@ M03 preserves that boundary. Its tokens, focus trap, components, presentation ma
 surfaces live entirely in the shared browser package. The preview's `Ctrl+Shift+Space` invocation is an ordinary page
 keyboard listener that operates only while the Studio page has focus. M03 registers no global shortcut, keyboard hook,
 native widget, Tauri command, named-pipe client, service, AppBar, autostart entry, installer, or production shell path.
+
+M04 adds a generated protocol mirror and browser replay validator, not a native transport entrypoint. The validator
+rejects unsafe integers, unordered envelopes, unknown fixture/surface types, more than one contextual surface, plans
+that do not begin with the Orb, mismatched snapshot/plan revisions, and incompatibility payloads that do not map to the
+passive fatal-error stage with an explicit unchanged-Windows message. A source-policy test includes
+`libs/agent-runtime-client` and rejects Tauri or named-pipe access. The actual current-user ACL, DPAPI bootstrap,
+HMAC-SHA256 handshake, bounded queue, heartbeat, and reconnect implementation live and are tested in the separate
+runtime process.

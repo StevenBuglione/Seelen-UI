@@ -30,6 +30,9 @@
       "@agent-os/shell-ui": [
         "libs/agent-shell-ui/src/index.ts"
       ],
+      "@agent-os/runtime-client": [
+        "libs/agent-runtime-client/src/index.ts"
+      ],
       "@icons": [
         "libs/ui/react/components/Icon/icons.ts"
       ],

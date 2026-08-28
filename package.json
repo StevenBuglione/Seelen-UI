@@ -20,7 +20,7 @@
     "studio:test:snapshots": "playwright test --config tools/shell-studio/playwright.config.ts tests/visual tests/aria",
     "studio:update-snapshots": "playwright test --config tools/shell-studio/playwright.config.ts tests/visual tests/aria --update-snapshots",
     "test": "npm run test:unit",
-    "test:unit": "tsx --test libs/agent-shell-ui/tests/*.test.ts",
+    "test:unit": "tsx --test libs/agent-shell-ui/tests/*.test.ts libs/agent-runtime-client/tests/*.test.ts",
     "translate": "tsx ./scripts/translate/mod.ts",
     "type-check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json && cd ./libs/core && deno check && cd ../..",
     "version:start": "tsx ./scripts/versionish.ts start",

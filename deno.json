@@ -18,7 +18,8 @@
   "fmt": {
     "lineWidth": 120,
     "exclude": [
-      "**/i18n/translations/**"
+      "**/i18n/translations/**",
+      "libs/agent-runtime-client/src/generated/**"
     ]
   }
 }
